@@ -3,7 +3,7 @@ import commonjs from 'rollup-plugin-commonjs';
 import json from 'rollup-plugin-json';
 
 export default {
-  input: 'bin/botium-cli.js',
+  input: 'src/index.js',
   output: [
     {
       file: 'dist/botium-cli-es.js',

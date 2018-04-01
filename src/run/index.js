@@ -20,7 +20,7 @@ const handler = (argv) => {
   debug(`command options: ${util.inspect(argv)}`)
 
   if (argv.verbose) {
-    require('debug').enable('botium*')
+    require('debug').enable('testmybot*,botium*')
   }
   if (argv.config) {
     testmybot.globals().configfile = argv.config

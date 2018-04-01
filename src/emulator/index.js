@@ -1,5 +1,5 @@
 const util = require('util')
-const debug = require('debug')('botium-cli-run')
+const debug = require('debug')('botium-cli-emulator')
 
 const testmybot = require('testmybot')
 
@@ -7,7 +7,7 @@ const handler = (argv) => {
   debug(`command options: ${util.inspect(argv)}`)
 
   if (argv.verbose) {
-    require('debug').enable('botium*')
+    require('debug').enable('testmybot*,botium*')
   }
   if (argv.config) {
     testmybot.globals().configfile = argv.config

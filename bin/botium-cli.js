@@ -13,7 +13,7 @@ yargsCmd.usage('Botium CLI\n\nUsage: $0 [options]') // eslint-disable-line
   })
   .option('config', {
     alias: 'c',
-    describe: 'Path to the Botium configuration file (botium.json)',
+    describe: 'Path to the Botium configuration file',
     default: './botium.json'
   })
   .demandCommand()
