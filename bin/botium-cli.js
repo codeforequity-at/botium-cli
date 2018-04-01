@@ -5,6 +5,7 @@ yargsCmd.usage('Botium CLI\n\nUsage: $0 [options]') // eslint-disable-line
   .help('help').alias('help', 'h')
   .version('version', require('../package.json').version).alias('version', 'V')
   .command(require('../src/run'))
+  .command(require('../src/import'))
   .command(require('../src/emulator'))
   .option('verbose', {
     alias: 'v',
