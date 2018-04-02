@@ -1,6 +1,6 @@
 {
   "name": "botium-cli",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Botium - The Selenium for Chatbots",
   "main": "dist/botium-cli-cjs.js",
   "module": "dist/botium-cli-es.js",
@@ -8,7 +8,7 @@
     "node": ">=6.0"
   },
   "bin": {
-    "testmybot": "./bin/testmybot.js"
+    "botium-cli": "./bin/botium-cli.js"
   },
   "scripts": {
     "build": "npm run eslint && rollup -c",
