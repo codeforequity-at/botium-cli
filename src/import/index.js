@@ -37,11 +37,6 @@ module.exports = {
       describe: 'Specify the source of the conversations for the configured chatbot',
       choices: [ 'watson-intents' ]
     })
-    yargs.option('convos', {
-      alias: 'C',
-      describe: 'Path to a directory holding your convo files',
-      default: '.'
-    })
   },
   handler
 }

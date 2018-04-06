@@ -17,9 +17,14 @@ Kommandos:
 Optionen:
   --help, -h     Hilfe anzeigen                                        [boolean]
   --version, -V  Version anzeigen                                      [boolean]
-  --verbose, -v  Enable verbose output                         [Standard: false]
-  --config, -c   Path to the Botium configuration file
-                                                     [Standard: "./botium.json"]
+  --verbose, -v  Enable verbose output (also read from env variable
+                 "BOTIUM_VERBOSE" - "1" means verbose)         [Standard: false]
+  --convos, -C   Path to a directory holding your convo files. Can be specified
+                 more than once, ending in "--" ("... --convos dir1 dir2 dir3 --
+                 ...") (also read from env variables starting with
+                 "BOTIUM_CONVOS")                        [array] [Standard: "."]
+  --config, -c   Path to the Botium configuration file (also read from env
+                 variable "BOTIUM_CONFIG")           [Standard: "./botium.json"]
 ```
 
 
