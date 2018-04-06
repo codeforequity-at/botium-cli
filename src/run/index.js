@@ -1,10 +1,7 @@
 const util = require('util')
 const path = require('path')
 const Mocha = require('mocha')
-const _ = require('lodash')
 const debug = require('debug')('botium-cli-run')
-
-const testmybot = require('testmybot')
 
 const outputTypes = [
   'tap',
@@ -19,22 +16,20 @@ const outputTypes = [
 const handler = (argv) => {
   debug(`command options: ${util.inspect(argv)}`)
 
-  if (argv.verbose) {
-    require('debug').enable('testmybot*,botium*')
-  }
-  if (argv.config) {
-    testmybot.globals().configfile = argv.config
-  }
-  if (argv.convos) {
-    if (!_.isArray(argv.convos)) argv.convos = [ argv.convos ]
-    testmybot.globals().convodirs = argv.convos
-  }
+  argv.testsuitename = process.env.BOTIUM_TESTSUITENAME || argv.testsuitename
+  argv.timeout = process.env.BOTIUM_TIMEOUT || argv.timeout
+  argv.timeout = argv.timeout * 1000
+
+  global.configJson = argv.configJson
+  global.convos = argv.convos
+  global.testsuitename = argv.testsuitename
+  global.timeout = argv.timeout
 
   const mocha = new Mocha({
     reporter: argv.output,
     reporterOptions: argv.reporterOptions
   })
-  mocha.addFile(path.resolve(__dirname, 'testmybot.spec.js'))
+  mocha.addFile(path.resolve(__dirname, 'mocha.spec.js'))
 
   mocha.run((failures) => {
     process.on('exit', () => {
@@ -52,10 +47,15 @@ module.exports = {
       choices: outputTypes,
       default: 'spec'
     })
-    yargs.option('convos', {
-      alias: 'C',
-      describe: 'Path to a directory holding your convo files (can be specified more than once)',
-      default: '.'
+    yargs.option('testsuitename', {
+      alias: 'n',
+      describe: 'Name of the Test Suite (also read from env variable "BOTIUM_TESTSUITENAME")',
+      default: 'Botium Test-Suite'
+    })
+    yargs.option('timeout', {
+      describe: 'Timeout in seconds for Botium functions (also read from env variable "BOTIUM_TIMEOUT")',
+      number: true,
+      default: 60
     })
     yargs.option('reporter-options', {
       describe: 'Options for mocha reporter, forwared as-is'

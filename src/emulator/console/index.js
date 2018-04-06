@@ -3,6 +3,7 @@ const fs = require('fs')
 const path = require('path')
 const chalk = require('chalk')
 const clear = require('clear')
+const mkdirp = require('mkdirp')
 const figlet = require('figlet')
 const readline = require('readline')
 const slug = require('slug')
@@ -72,8 +73,10 @@ module.exports = (config, outputDir) => {
           return
         } catch (err) {
         }
-        
+
         try {
+          mkdirp.sync(outputDir)
+
           const scriptData = compiler.Decompile([ { header: { name }, conversation } ], 'SCRIPTING_FORMAT_TXT')
           fs.writeFileSync(filename, scriptData)
           console.log(chalk.green('Conversation written to file ' + filename))

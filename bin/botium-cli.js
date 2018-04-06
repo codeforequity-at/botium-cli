@@ -2,6 +2,7 @@
 const fs = require('fs')
 const yargsCmd = require('yargs')
 const _ = require('lodash')
+const debug = require('debug')('botium-cli')
 
 const handleConfig = (argv, loadConfig) => {
   argv.verbose = argv.v = process.env.BOTIUM_VERBOSE === '1' || argv.verbose
@@ -12,6 +13,7 @@ const handleConfig = (argv, loadConfig) => {
 
   argv.config = argv.c = process.env.BOTIUM_CONFIG || argv.config
   if (loadConfig) {
+    debug('Loading Botium configuration file ' + argv.config)
     try {
       argv.configJson = JSON.parse(fs.readFileSync(argv.config))
     } catch (err) {
@@ -28,8 +30,7 @@ const handleConfig = (argv, loadConfig) => {
       argv.convos = [ argv.convos ]
     }
   }
-  console.log(argv.convos)
-  
+
   return true
 }
 
@@ -58,11 +59,11 @@ yargsCmd.usage('Botium CLI\n\nUsage: $0 [options]') // eslint-disable-line
     default: false
   })
   .option('convos', {
-      alias: 'C',
-      describe: 'Path to a directory holding your convo files. Can be specified more than once, ending in "--" ("... --convos dir1 dir2 dir3 -- ...") (also read from env variables starting with "BOTIUM_CONVOS")',
-      array: true,
-      default: '.'
-    })  
+    alias: 'C',
+    describe: 'Path to a directory holding your convo files. Can be specified more than once, ending in "--" ("... --convos dir1 dir2 dir3 -- ...") (also read from env variables starting with "BOTIUM_CONVOS")',
+    array: true,
+    default: '.'
+  })
   .option('config', {
     alias: 'c',
     describe: 'Path to the Botium configuration file (also read from env variable "BOTIUM_CONFIG")',
