@@ -38,7 +38,7 @@ describe(global.testsuitename, () => {
   })
   after(function (done) {
     this.timeout(global.timeout)
-    botiumContext.container.Clear().then(() => done()).catch(done)
+    botiumContext.container.Clean().then(() => done()).catch(done)
   })
 
   global.convos.forEach((convodir) => {
