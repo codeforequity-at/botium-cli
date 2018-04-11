@@ -1,6 +1,9 @@
 # botium-cli
 Botium CLI - The Selenium for Chatbots
 
+Documentation available in the [Botium Wiki](https://github.com/codeforequity-at/botium-core/wiki/The-Botium-CLI)
+
+
 ```
 > npm install -g botium-cli
 > botium-cli
