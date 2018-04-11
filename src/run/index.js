@@ -9,7 +9,6 @@ const outputTypes = [
   'xunit',
   'spec',
   'list',
-  'html',
   'mochawesome'
 ]
 
