@@ -25,6 +25,7 @@
       "node_modules/figlet/fonts/*",
       "node_modules/botium-core",
       "node_modules/opn",
+      "node_modules/esprima",
       "*.json"
     ]
   },
