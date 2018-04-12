@@ -24,6 +24,7 @@
       "src/emulator/browser/views/**/*",
       "node_modules/figlet/fonts/*",
       "node_modules/botium-core",
+      "node_modules/opn",
       "*.json"
     ]
   },
@@ -60,6 +61,7 @@
     "clear": "^0.1.0",
     "debug": "^3.1.0",
     "ejs": "^2.5.8",
+    "esprima": "git+https://github.com/codeforequity-at/jsonpath.git",
     "express": "^4.16.3",
     "figlet": "^1.2.0",
     "lodash": "^4.17.5",
