@@ -1,6 +1,6 @@
 {
   "name": "botium-cli",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "Botium - The Selenium for Chatbots",
   "main": "dist/botium-cli-cjs.js",
   "module": "dist/botium-cli-es.js",
@@ -25,6 +25,7 @@
       "node_modules/figlet/fonts/*",
       "node_modules/botium-core",
       "node_modules/opn",
+      "node_modules/esprima",
       "*.json"
     ]
   },
