@@ -1,33 +1,8 @@
 const util = require('util')
-const slug = require('slug')
-const fs = require('fs')
-const path = require('path')
-const mkdirp = require('mkdirp')
 const async = require('async')
 const botium = require('botium-core')
 const debug = require('debug')('botium-cli-import-watson-intents')
-
-const writeConvo = (compiler, convo, outputDir) => {
-  const filename = path.resolve(outputDir, slug(convo.header.name) + '.convo.txt')
-
-  mkdirp.sync(outputDir)
-
-  const scriptData = compiler.Decompile([ convo ], 'SCRIPTING_FORMAT_TXT')
-
-  fs.writeFileSync(filename, scriptData)
-  console.log(`SUCCESS: wrote convo to file ${filename}`)
-}
-
-const writeUtterances = (compiler, utterance, samples, outputDir) => {
-  const filename = path.resolve(outputDir, slug(utterance) + '.utterances.txt')
-
-  mkdirp.sync(outputDir)
-
-  const scriptData = [ utterance, ...samples ].join('\n')
-
-  fs.writeFileSync(filename, scriptData)
-  console.log(`SUCCESS: wrote utterances to file ${filename}`)
-}
+const helpers = require('./helpers')
 
 module.exports = (config, outputDir) => {
   debug(JSON.stringify(config, null, 2))
@@ -105,15 +80,17 @@ module.exports = (config, outputDir) => {
                 ]
               }
               try {
-                writeConvo(botiumContext.compiler, convo, outputDir)
+                const filename = helpers.writeConvo(botiumContext.compiler, convo, outputDir)
+                console.log(`SUCCESS: wrote convo to file ${filename}`)
               } catch (err) {
                 console.log(`WARNING: writing convo for intent "${intent.intent}" failed: ${util.inspect(err)}`)
               }
               try {
-                writeUtterances(botiumContext.compiler,
+                const filename = helpers.writeUtterances(botiumContext.compiler,
                   intent.intent + '_input',
                   intent.examples.map((e) => e.text),
                   outputDir)
+                console.log(`SUCCESS: wrote utterances to file ${filename}`)
               } catch (err) {
                 console.log(`WARNING: writing utterances for intent "${intent.intent}" failed: ${util.inspect(err)}`)
               }
