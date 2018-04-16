@@ -6,6 +6,55 @@ const botium = require('botium-core')
 const debug = require('debug')('botium-cli-import-watson-intents')
 const helpers = require('./helpers')
 
+const importIntents = (outputDir, botiumContext, filesWritten) => {
+  const intentEntries = botiumContext.zipEntries.filter((zipEntry) => zipEntry.entryName.startsWith('intent') && !zipEntry.entryName.match('usersays'))
+
+  intentEntries.forEach((zipEntry) => {
+    const intent = JSON.parse(botiumContext.unzip.readAsText(zipEntry.entryName))
+    if (intent.parentId) return
+
+    const utterancesEntry = zipEntry.entryName.replace('.json', '') + '_usersays_' + botiumContext.agentInfo.language + '.json'
+    debug(`Found root intent ${intent.name}, checking for utterances in ${utterancesEntry}`)
+    if (!botiumContext.zipEntries.find((zipEntry) => zipEntry.entryName === utterancesEntry)) {
+      debug(`Utterances files not found for ${intent.name}, ignoring intent`)
+      return
+    }
+    const utterances = JSON.parse(botiumContext.unzip.readAsText(utterancesEntry))
+
+    const convo = {
+      header: {
+        name: intent.name
+      },
+      conversation: [
+        {
+          sender: 'me',
+          messageText: intent.name + '_input'
+        },
+        {
+          sender: 'bot',
+          messageText: intent.name
+        }
+      ]
+    }
+    try {
+      const filename = helpers.writeConvo(botiumContext.compiler, convo, outputDir)
+      console.log(`SUCCESS: wrote convo to file ${filename}`)
+    } catch (err) {
+      console.log(`WARNING: writing convo for intent "${intent.intent}" failed: ${util.inspect(err)}`)
+    }
+    try {
+      const filename = helpers.writeUtterances(botiumContext.compiler,
+        intent.name + '_input',
+        utterances.map((utterance) => utterance.data.reduce((accumulator, currentValue) => accumulator + '' + currentValue.text, '')),
+        outputDir)
+      console.log(`SUCCESS: wrote utterances to file ${filename}`)
+    } catch (err) {
+      console.log(`WARNING: writing utterances for intent "${intent.intent}" failed: ${util.inspect(err)}`)
+    }
+  })
+  filesWritten()
+}
+
 module.exports = (config, outputDir) => {
   debug(JSON.stringify(config, null, 2))
 
@@ -85,52 +134,7 @@ module.exports = (config, outputDir) => {
       },
 
       (filesWritten) => {
-        const intentEntries = botiumContext.zipEntries.filter((zipEntry) => zipEntry.entryName.startsWith('intent') && !zipEntry.entryName.match('usersays'))
-
-        intentEntries.forEach((zipEntry) => {
-          const intent = JSON.parse(botiumContext.unzip.readAsText(zipEntry.entryName))
-          if (intent.parentId) return
-
-          const utterancesEntry = zipEntry.entryName.replace('.json', '') + '_usersays_' + botiumContext.agentInfo.language + '.json'
-          debug(`Found root intent ${intent.name}, checking for utterances in ${utterancesEntry}`)
-          if (!botiumContext.zipEntries.find((zipEntry) => zipEntry.entryName === utterancesEntry)) {
-            debug(`Utterances files not found for ${intent.name}, ignoring intent`)
-            return
-          }
-          const utterances = JSON.parse(botiumContext.unzip.readAsText(utterancesEntry))
-
-          const convo = {
-            header: {
-              name: intent.name
-            },
-            conversation: [
-              {
-                sender: 'me',
-                messageText: intent.name + '_input'
-              },
-              {
-                sender: 'bot',
-                messageText: intent.name
-              }
-            ]
-          }
-          try {
-            const filename = helpers.writeConvo(botiumContext.compiler, convo, outputDir)
-            console.log(`SUCCESS: wrote convo to file ${filename}`)
-          } catch (err) {
-            console.log(`WARNING: writing convo for intent "${intent.intent}" failed: ${util.inspect(err)}`)
-          }
-          try {
-            const filename = helpers.writeUtterances(botiumContext.compiler,
-              intent.name + '_input',
-              utterances.map((utterance) => utterance.data.reduce((accumulator, currentValue) => accumulator + '' + currentValue.text, '')),
-              outputDir)
-            console.log(`SUCCESS: wrote utterances to file ${filename}`)
-          } catch (err) {
-            console.log(`WARNING: writing utterances for intent "${intent.intent}" failed: ${util.inspect(err)}`)
-          }
-        })
-        filesWritten()
+        importIntents(outputDir, botiumContext, filesWritten)
       }
 
     ],
