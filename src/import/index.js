@@ -12,7 +12,9 @@ const handler = (argv) => {
   if (argv.source === 'watson-intents') {
     require('./watsonintents')(argv.configJson, argv.convos[0])
   } else if (argv.source === 'dialogflow-intents') {
-    require('./dialogflowintents')(argv.configJson, argv.convos[0])
+    require('./dialogflowintents').importDialogflowIntents(argv.configJson, argv.convos[0])
+  } else if (argv.source === 'dialogflow-conversations') {
+    require('./dialogflowintents').importDialogflowConversations(argv.configJson, argv.convos[0])
   }
 }
 
@@ -22,7 +24,7 @@ module.exports = {
   builder: (yargs) => {
     yargs.positional('source', {
       describe: 'Specify the source of the conversations for the configured chatbot',
-      choices: [ 'watson-intents', 'dialogflow-intents' ]
+      choices: [ 'watson-intents', 'dialogflow-intents', 'dialogflow-conversations' ]
     })
   },
   handler
