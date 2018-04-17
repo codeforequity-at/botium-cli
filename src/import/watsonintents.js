@@ -1,4 +1,5 @@
 const util = require('util')
+const slug = require('slug')
 const async = require('async')
 const botium = require('botium-core')
 const debug = require('debug')('botium-cli-import-watson-intents')
@@ -64,6 +65,9 @@ module.exports = (config, outputDir) => {
         async.parallelLimit(
           botiumContext.workspace.intents.map((intent) => {
             return (intentWritten) => {
+              const inputUtterances = intent.examples.map((e) => e.text)
+              const utterancesRef = slug(intent.intent + '_input')
+
               const convo = {
                 header: {
                   name: intent.intent
@@ -71,7 +75,7 @@ module.exports = (config, outputDir) => {
                 conversation: [
                   {
                     sender: 'me',
-                    messageText: intent.intent + '_input'
+                    messageText: utterancesRef
                   },
                   {
                     sender: 'bot',
@@ -86,10 +90,7 @@ module.exports = (config, outputDir) => {
                 console.log(`WARNING: writing convo for intent "${intent.intent}" failed: ${util.inspect(err)}`)
               }
               try {
-                const filename = helpers.writeUtterances(botiumContext.compiler,
-                  intent.intent + '_input',
-                  intent.examples.map((e) => e.text),
-                  outputDir)
+                const filename = helpers.writeUtterances(botiumContext.compiler, utterancesRef, inputUtterances, outputDir)
                 console.log(`SUCCESS: wrote utterances to file ${filename}`)
               } catch (err) {
                 console.log(`WARNING: writing utterances for intent "${intent.intent}" failed: ${util.inspect(err)}`)

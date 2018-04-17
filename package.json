@@ -1,6 +1,6 @@
 {
   "name": "botium-cli",
-  "version": "0.0.10",
+  "version": "0.0.11",
   "description": "Botium - The Selenium for Chatbots",
   "main": "dist/botium-cli-cjs.js",
   "module": "dist/botium-cli-es.js",

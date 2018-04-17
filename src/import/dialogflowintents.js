@@ -1,4 +1,5 @@
 const util = require('util')
+const slug = require('slug')
 const async = require('async')
 const AdmZip = require('adm-zip')
 const dialogflow = require('dialogflow')
@@ -20,6 +21,8 @@ const importIntents = (outputDir, botiumContext, filesWritten) => {
       return
     }
     const utterances = JSON.parse(botiumContext.unzip.readAsText(utterancesEntry))
+    const inputUtterances = utterances.map((utterance) => utterance.data.reduce((accumulator, currentValue) => accumulator + '' + currentValue.text, ''))
+    const utteranceRef = slug(intent.name + '_input')
 
     const convo = {
       header: {
@@ -28,7 +31,7 @@ const importIntents = (outputDir, botiumContext, filesWritten) => {
       conversation: [
         {
           sender: 'me',
-          messageText: intent.name + '_input'
+          messageText: utteranceRef
         },
         {
           sender: 'bot',
@@ -43,10 +46,7 @@ const importIntents = (outputDir, botiumContext, filesWritten) => {
       console.log(`WARNING: writing convo for intent "${intent.intent}" failed: ${util.inspect(err)}`)
     }
     try {
-      const filename = helpers.writeUtterances(botiumContext.compiler,
-        intent.name + '_input',
-        utterances.map((utterance) => utterance.data.reduce((accumulator, currentValue) => accumulator + '' + currentValue.text, '')),
-        outputDir)
+      const filename = helpers.writeUtterances(botiumContext.compiler, utteranceRef, inputUtterances, outputDir)
       console.log(`SUCCESS: wrote utterances to file ${filename}`)
     } catch (err) {
       console.log(`WARNING: writing utterances for intent "${intent.intent}" failed: ${util.inspect(err)}`)
@@ -107,10 +107,12 @@ const importConversations = (outputDir, botiumContext, filesWritten) => {
 
   const follow = (intent, currentStack = []) => {
     const cp = currentStack.slice(0)
-    cp.push({ sender: 'me', messageText: intent.name + '_input', intent: intent.name })
+
+    const utterancesRef = slug(intent.name + '_input')
+    cp.push({ sender: 'me', messageText: utterancesRef, intent: intent.name })
 
     try {
-      const filename = helpers.writeUtterances(botiumContext.compiler, intent.name + '_input', intent.inputUtterances, outputDir)
+      const filename = helpers.writeUtterances(botiumContext.compiler, utterancesRef, intent.inputUtterances, outputDir)
       console.log(`SUCCESS: wrote utterances to file ${filename}`)
     } catch (err) {
       console.log(`WARNING: writing input utterances for intent "${intent.intent}" failed: ${util.inspect(err)}`)
@@ -119,9 +121,11 @@ const importConversations = (outputDir, botiumContext, filesWritten) => {
     if (intent.outputUtterances && intent.outputUtterances.length > 0) {
       for (let stepIndex = 0; stepIndex < intent.outputUtterances.length; stepIndex++) {
         if (intent.outputUtterances[stepIndex] && intent.outputUtterances[stepIndex].length > 0) {
-          cp.push({ sender: 'bot', messageText: intent.name + '_output_' + stepIndex })
+          const utterancesRef = slug(intent.name + '_output_' + stepIndex)
+
+          cp.push({ sender: 'bot', messageText: utterancesRef })
           try {
-            const filename = helpers.writeUtterances(botiumContext.compiler, intent.name + '_output_' + stepIndex, intent.outputUtterances[stepIndex], outputDir)
+            const filename = helpers.writeUtterances(botiumContext.compiler, utterancesRef, intent.outputUtterances[stepIndex], outputDir)
             console.log(`SUCCESS: wrote utterances to file ${filename}`)
           } catch (err) {
             console.log(`WARNING: writing output utterances for intent "${intent.intent}" failed: ${util.inspect(err)}`)
