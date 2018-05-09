@@ -5,7 +5,7 @@ const chalk = require('chalk')
 const clear = require('clear')
 const mkdirp = require('mkdirp')
 const figlet = require('figlet')
-const readline = require('readline')
+const repl = require('repl')
 const slug = require('slug')
 const BotDriver = require('botium-core').BotDriver
 
@@ -47,13 +47,7 @@ module.exports = (config, outputDir) => {
     console.log(chalk.green('Chatbot online.'))
     console.log(chalk.green(helpText))
 
-    const rl = readline.createInterface({
-      input: process.stdin,
-      output: process.stdout,
-      terminal: false
-    })
-
-    rl.on('line', (line) => {
+    const evaluator = (line) => {
       if (!line) return
 
       if (line.toLowerCase() === '#exit') {
@@ -98,6 +92,8 @@ module.exports = (config, outputDir) => {
         container.UserSays(msg)
         conversation.push(msg)
       }
-    })
+    }
+    repl.start({prompt: '', eval: evaluator});
+
   }).catch((err) => console.log(chalk.red(util.inspect(err))))
 }
