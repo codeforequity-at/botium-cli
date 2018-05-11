@@ -93,7 +93,6 @@ module.exports = (config, outputDir) => {
         conversation.push(msg)
       }
     }
-    repl.start({prompt: '', eval: evaluator});
-
+    repl.start({prompt: '', eval: evaluator})
   }).catch((err) => console.log(chalk.red(util.inspect(err))))
 }
