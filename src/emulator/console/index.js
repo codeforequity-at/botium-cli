@@ -48,9 +48,7 @@ module.exports = (config, outputDir) => {
     console.log(chalk.green(helpText))
 
     const evaluator = (line) => {
-      if(line.length>=1 && (line.substr(line.length-1) === '\n' || line.substr(line.length-1) === '\r')){
-        line = line.substr(0,line.length-1)
-      }
+      if (line) line = line.trim()
       if (!line) return
 
       if (line.toLowerCase() === '#exit') {
