@@ -53,6 +53,7 @@ yargsCmd.usage('Botium CLI\n\nUsage: $0 [options]') // eslint-disable-line
   .command(wrapHandler(require('../src/run'), true))
   .command(wrapHandler(require('../src/import'), true))
   .command(wrapHandler(require('../src/emulator'), true))
+  .command(require('../src/agent'))
   .option('verbose', {
     alias: 'v',
     describe: 'Enable verbose output (also read from env variable "BOTIUM_VERBOSE" - "1" means verbose)',
