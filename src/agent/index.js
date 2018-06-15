@@ -1,5 +1,4 @@
 const util = require('util')
-const yargsCmd = require('yargs')
 const debug = require('debug')('botium-cli-agent')
 
 const handler = (argv) => {
