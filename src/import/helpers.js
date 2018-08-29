@@ -3,6 +3,17 @@ const fs = require('fs')
 const path = require('path')
 const mkdirp = require('mkdirp')
 
+module.exports.writeConvosExcel = (compiler, convos, outputDir, filenamePrefix) => {
+  const filename = path.resolve(outputDir, slug(filenamePrefix) + '.xlsx')
+
+  mkdirp.sync(outputDir)
+
+  const scriptData = compiler.Decompile(convos, 'SCRIPTING_FORMAT_XSLX')
+
+  fs.writeFileSync(filename, scriptData)
+  return filename
+}
+
 module.exports.writeConvo = (compiler, convo, outputDir) => {
   const filename = path.resolve(outputDir, slug(convo.header.name) + '.convo.txt')
 
