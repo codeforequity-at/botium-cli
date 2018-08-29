@@ -10,7 +10,9 @@ const handler = (argv) => {
   }
 
   if (argv.source === 'watson-intents') {
-    require('./watsonintents')(argv.configJson, argv.convos[0])
+    require('./watsonintents').importWatsonIntents(argv.configJson, argv.convos[0])
+  } else if (argv.source === 'watson-logs') {
+    require('./watsonintents').importWatsonLogs(argv.configJson, argv.convos[0], argv.watsonfilter)
   } else if (argv.source === 'dialogflow-intents') {
     require('./dialogflowintents').importDialogflowIntents(argv.configJson, argv.convos[0])
   } else if (argv.source === 'dialogflow-conversations') {
@@ -24,7 +26,10 @@ module.exports = {
   builder: (yargs) => {
     yargs.positional('source', {
       describe: 'Specify the source of the conversations for the configured chatbot',
-      choices: [ 'watson-intents', 'dialogflow-intents', 'dialogflow-conversations' ]
+      choices: [ 'watson-intents', 'watson-logs', 'dialogflow-intents', 'dialogflow-conversations' ]
+    })
+    yargs.option('watsonfilter', {
+      describe: 'Filter for downloading the watson logs, for example "response_timestamp>=2018-08-20,response_timestamp<2018-08-22"'
     })
   },
   handler
