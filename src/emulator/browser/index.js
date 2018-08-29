@@ -13,11 +13,8 @@ const mkdirp = require('mkdirp')
 const BotDriver = require('botium-core').BotDriver
 const debug = require('debug')('botium-cli-browser')
 
-module.exports = (config, outputDir, idePort) => {
+module.exports = (outputDir, idePort) => {
   const driver = new BotDriver()
-    .setCapabilities(config.botium.Capabilities)
-    .setEnvs(config.botium.Envs)
-    .setSources(config.botium.Sources)
   let container = null
 
   clear()
@@ -94,7 +91,11 @@ module.exports = (config, outputDir, idePort) => {
     debug('GET /')
 
     const data = {
-      config: config.botium
+      config: {
+        Capabilities: driver.caps,
+        Envs: driver.envs,
+        Sources: driver.sources
+      }
     }
     res.render('index', data)
   })

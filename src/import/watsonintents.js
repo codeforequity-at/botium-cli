@@ -5,15 +5,10 @@ const botium = require('botium-core')
 const debug = require('debug')('botium-cli-import-watson-intents')
 const helpers = require('./helpers')
 
-module.exports.importWatsonIntents = (config, outputDir) => {
-  debug(JSON.stringify(config, null, 2))
-
+module.exports.importWatsonIntents = (outputDir) => {
   return new Promise((resolve, reject) => {
     const botiumContext = {
-      driver: new botium.BotDriver()
-        .setCapabilities(config.botium.Capabilities)
-        .setEnvs(config.botium.Envs)
-        .setSources(config.botium.Sources),
+      driver: new botium.BotDriver(),
       compiler: null,
       container: null,
       workspace: null
@@ -114,15 +109,10 @@ module.exports.importWatsonIntents = (config, outputDir) => {
   })
 }
 
-module.exports.importWatsonLogs = (config, outputDir, filter) => {
-  debug(JSON.stringify(config, null, 2))
-
+module.exports.importWatsonLogs = (outputDir, filter) => {
   return new Promise((resolve, reject) => {
     const botiumContext = {
-      driver: new botium.BotDriver()
-        .setCapabilities(config.botium.Capabilities)
-        .setEnvs(config.botium.Envs)
-        .setSources(config.botium.Sources),
+      driver: new botium.BotDriver(),
       compiler: null,
       container: null,
       logs: null

@@ -8,10 +8,7 @@ const debug = require('debug')('botium-cli-mocha-spec')
 
 describe(global.testsuitename, () => {
   const botiumContext = {
-    driver: new botium.BotDriver()
-      .setCapabilities(global.configJson.botium.Capabilities)
-      .setEnvs(global.configJson.botium.Envs)
-      .setSources(global.configJson.botium.Sources),
+    driver: new botium.BotDriver(),
     compiler: null,
     container: null
   }

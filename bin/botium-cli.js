@@ -1,25 +1,18 @@
 #!/usr/bin/env node
-const fs = require('fs')
 const yargsCmd = require('yargs')
 const _ = require('lodash')
 const debug = require('debug')('botium-cli')
 
-const handleConfig = (argv, loadConfig) => {
+const handleConfig = (argv) => {
   argv.verbose = argv.v = process.env.BOTIUM_VERBOSE === '1' || argv.verbose
 
   if (argv.verbose) {
     require('debug').enable('botium*')
   }
 
-  argv.config = argv.c = process.env.BOTIUM_CONFIG || argv.config
-  if (loadConfig) {
-    debug('Loading Botium configuration file ' + argv.config)
-    try {
-      argv.configJson = JSON.parse(fs.readFileSync(argv.config))
-    } catch (err) {
-      console.log(`FAILED: configuration file ${argv.config} not readable`)
-      return false
-    }
+  if (argv.config || argv.c) {
+    process.env.BOTIUM_CONFIG = argv.config || argv.c
+    debug(`Using Botium configuration file ${process.env.BOTIUM_CONFIG}`)
   }
 
   const envConvoDirs = Object.keys(process.env).filter(e => e.startsWith('BOTIUM_CONVOS')).map(e => process.env[e]).filter(e => e)
@@ -34,10 +27,10 @@ const handleConfig = (argv, loadConfig) => {
   return true
 }
 
-const wrapHandler = (builder, loadConfig) => {
+const wrapHandler = (builder) => {
   const origHandler = builder.handler
   builder.handler = (argv) => {
-    if (handleConfig(argv, loadConfig)) {
+    if (handleConfig(argv)) {
       origHandler(argv)
     }
   }
@@ -50,9 +43,9 @@ yargsCmd.usage('Botium CLI\n\nUsage: $0 [options]') // eslint-disable-line
   .showHelpOnFail(true)
   .strict(true)
   .demandCommand(1, 'You need at least one command before moving on')
-  .command(wrapHandler(require('../src/run'), true))
-  .command(wrapHandler(require('../src/import'), true))
-  .command(wrapHandler(require('../src/emulator'), true))
+  .command(wrapHandler(require('../src/run')))
+  .command(wrapHandler(require('../src/import')))
+  .command(wrapHandler(require('../src/emulator')))
   .command(require('../src/agent'))
   .option('verbose', {
     alias: 'v',
