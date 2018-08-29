@@ -163,15 +163,10 @@ const importConversations = (outputDir, botiumContext, filesWritten) => {
   filesWritten()
 }
 
-const importDialogflow = (config, outputDir, importFunction) => {
-  debug(JSON.stringify(config, null, 2))
-
+const importDialogflow = (outputDir, importFunction) => {
   return new Promise((resolve, reject) => {
     const botiumContext = {
-      driver: new botium.BotDriver()
-        .setCapabilities(config.botium.Capabilities)
-        .setEnvs(config.botium.Envs)
-        .setSources(config.botium.Sources),
+      driver: new botium.BotDriver(),
       compiler: null,
       container: null,
       agentsClient: null,
@@ -255,5 +250,5 @@ const importDialogflow = (config, outputDir, importFunction) => {
   })
 }
 
-module.exports.importDialogflowIntents = (config, outputDir) => importDialogflow(config, outputDir, importIntents)
-module.exports.importDialogflowConversations = (config, outputDir) => importDialogflow(config, outputDir, importConversations)
+module.exports.importDialogflowIntents = (outputDir) => importDialogflow(outputDir, importIntents)
+module.exports.importDialogflowConversations = (outputDir) => importDialogflow(outputDir, importConversations)

@@ -10,13 +10,13 @@ const handler = (argv) => {
   }
 
   if (argv.source === 'watson-intents') {
-    require('./watsonintents').importWatsonIntents(argv.configJson, argv.convos[0])
+    require('./watsonintents').importWatsonIntents(argv.convos[0])
   } else if (argv.source === 'watson-logs') {
-    require('./watsonintents').importWatsonLogs(argv.configJson, argv.convos[0], argv.watsonfilter)
+    require('./watsonintents').importWatsonLogs(argv.convos[0], argv.watsonfilter)
   } else if (argv.source === 'dialogflow-intents') {
-    require('./dialogflowintents').importDialogflowIntents(argv.configJson, argv.convos[0])
+    require('./dialogflowintents').importDialogflowIntents(argv.convos[0])
   } else if (argv.source === 'dialogflow-conversations') {
-    require('./dialogflowintents').importDialogflowConversations(argv.configJson, argv.convos[0])
+    require('./dialogflowintents').importDialogflowConversations(argv.convos[0])
   }
 }
 

@@ -19,7 +19,6 @@ const handler = (argv) => {
   argv.timeout = process.env.BOTIUM_TIMEOUT || argv.timeout
   argv.timeout = argv.timeout * 1000
 
-  global.configJson = argv.configJson
   global.convos = argv.convos
   global.testsuitename = argv.testsuitename
   global.timeout = argv.timeout

@@ -11,10 +11,10 @@ const handler = (argv) => {
 
   if (argv.ui === 'console') {
     const emulator = require('./console')
-    emulator(argv.configJson, argv.convos[0])
+    emulator(argv.convos[0])
   } else if (argv.ui === 'browser') {
     const emulator = require('./browser')
-    emulator(argv.configJson, argv.convos[0], argv.emulatorport)
+    emulator(argv.convos[0], argv.emulatorport)
   } else {
     return yargsCmd.showHelp()
   }

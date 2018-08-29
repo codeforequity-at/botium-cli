@@ -9,11 +9,8 @@ const repl = require('repl')
 const slug = require('slug')
 const BotDriver = require('botium-core').BotDriver
 
-module.exports = (config, outputDir) => {
+module.exports = (outputDir) => {
   const driver = new BotDriver()
-    .setCapabilities(config.botium.Capabilities)
-    .setEnvs(config.botium.Envs)
-    .setSources(config.botium.Sources)
   const compiler = driver.BuildCompiler()
   let container = null
 
