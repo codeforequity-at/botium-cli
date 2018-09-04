@@ -198,16 +198,18 @@ const importDialogflow = (outputDir, importFunction) => {
           botiumContext.compiler = botiumContext.driver.BuildCompiler()
           compilerReady()
         } catch (err) {
+          console.log(err)
           compilerReady(err)
         }
       },
 
       (agentRead) => {
         try {
-          botiumContext.agentsClient = new dialogflow.v2beta1.AgentsClient(botiumContext.container.sessionOpts)
-          botiumContext.projectPath = botiumContext.agentsClient.projectPath(botiumContext.container.caps[botium.Capabilities.DIALOGFLOW_PROJECT_ID])
+          botiumContext.agentsClient = new dialogflow.AgentsClient(botiumContext.container.pluginInstance.sessionOpts)
+          botiumContext.projectPath = botiumContext.agentsClient.projectPath(botiumContext.container.caps['DIALOGFLOW_PROJECT_ID'])
           agentRead()
         } catch (err) {
+          console.log(err)
           agentRead(err)
         }
       },
