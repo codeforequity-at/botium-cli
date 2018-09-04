@@ -1,6 +1,7 @@
 const util = require('util')
 const slug = require('slug')
 const async = require('async')
+const XLSX = require('xlsx')
 const botium = require('botium-core')
 const debug = require('debug')('botium-cli-import-watson-intents')
 const helpers = require('./helpers')
@@ -109,7 +110,7 @@ module.exports.importWatsonIntents = (outputDir) => {
   })
 }
 
-module.exports.importWatsonLogs = (outputDir, filter) => {
+module.exports.importWatsonLogs = (outputDir, filter, format) => {
   return new Promise((resolve, reject) => {
     const botiumContext = {
       driver: new botium.BotDriver(),
@@ -198,38 +199,66 @@ module.exports.importWatsonLogs = (outputDir, filter) => {
       (filesWritten) => {
         if (!botiumContext.logs) return filesWritten('Watson conversation returned no logs')
 
-        const convos = []
-        const convosById = {}
+        if (format === 'convo') {
+          const convos = []
+          const convosById = {}
 
-        botiumContext.logs.forEach((log) => {
-          const conversationId = log.response.context.conversation_id
+          botiumContext.logs.forEach((log) => {
+            const conversationId = log.response.context.conversation_id
 
-          let convo = { header: {}, conversation: [] }
-          if (convosById[conversationId]) {
-            convo = convosById[conversationId]
-          } else {
-            convosById[conversationId] = convo
-            convos.push(convo)
+            let convo = { header: {}, conversation: [] }
+            if (convosById[conversationId]) {
+              convo = convosById[conversationId]
+            } else {
+              convosById[conversationId] = convo
+              convos.push(convo)
+            }
+
+            if (log.request.input && log.request.input.text) {
+              convo.conversation.push({ sender: 'me', messageText: log.request.input.text, timestamp: log.request_timestamp })
+            }
+            if (log.response.output && log.response.output.text) {
+              log.response.output.text.forEach((messageText) => {
+                if (messageText) convo.conversation.push({ sender: 'bot', messageText, timestamp: log.response_timestamp })
+              })
+            }
+          })
+          debug(`Watson logs got ${convos.length} convos`)
+
+          try {
+            const filename = helpers.writeConvosExcel(botiumContext.compiler, convos, outputDir, botiumContext.workspace.name)
+            console.log(`SUCCESS: wrote convos to file ${filename}`)
+            filesWritten()
+          } catch (err) {
+            console.log(`ERROR: writing convos failed: ${util.inspect(err)}`)
+            filesWritten(err)
           }
+        }
+        if (format === 'intent') {
+          const data = []
 
-          if (log.request.input && log.request.input.text) {
-            convo.conversation.push({ sender: 'me', messageText: log.request.input.text, timestamp: log.request_timestamp })
-          }
-          if (log.response.output && log.response.output.text) {
-            log.response.output.text.forEach((messageText) => {
-              if (messageText) convo.conversation.push({ sender: 'bot', messageText, timestamp: log.response_timestamp })
+          botiumContext.logs.forEach((log) => {
+            data.push({
+              date: log.request_timestamp,
+              last_intent: (log.response.intents ? log.response.intents[0].intent : ''),
+              last_input: log.request.input.text,
+              last_output: (log.response.output && log.response.output.text ? log.response.output.text[0] : '')
             })
-          }
-        })
-        debug(`Watson logs got ${convos.length} convos`)
+          })
+          const wb = XLSX.utils.book_new()
+          const ws = XLSX.utils.json_to_sheet(data, {header: ['date', 'last_intent', 'last_input', 'last_output']})
+          XLSX.utils.book_append_sheet(wb, ws, 'Botium')
+          const xlsxOutput = XLSX.write(wb, { type: 'buffer' })
+          debug(`Watson logs got ${data.length} intent lines`)
 
-        try {
-          const filename = helpers.writeConvosExcel(botiumContext.compiler, convos, outputDir, botiumContext.workspace.name)
-          console.log(`SUCCESS: wrote convos to file ${filename}`)
-          filesWritten()
-        } catch (err) {
-          console.log(`ERROR: writing convos failed: ${util.inspect(err)}`)
-          filesWritten(err)
+          try {
+            const filename = helpers.writeIntentsExcel(xlsxOutput, outputDir, botiumContext.workspace.name)
+            console.log(`SUCCESS: wrote intents to file ${filename}`)
+            filesWritten()
+          } catch (err) {
+            console.log(`ERROR: writing intents failed: ${util.inspect(err)}`)
+            filesWritten(err)
+          }
         }
       }
     ],

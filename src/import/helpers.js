@@ -14,6 +14,15 @@ module.exports.writeConvosExcel = (compiler, convos, outputDir, filenamePrefix) 
   return filename
 }
 
+module.exports.writeIntentsExcel = (buffer, outputDir, filenamePrefix) => {
+  const filename = path.resolve(outputDir, slug(filenamePrefix) + '.xlsx')
+
+  mkdirp.sync(outputDir)
+
+  fs.writeFileSync(filename, buffer)
+  return filename
+}
+
 module.exports.writeConvo = (compiler, convo, outputDir) => {
   const filename = path.resolve(outputDir, slug(convo.header.name) + '.convo.txt')
 
