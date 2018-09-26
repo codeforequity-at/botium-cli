@@ -3,6 +3,7 @@ const slug = require('slug')
 const async = require('async')
 const AdmZip = require('adm-zip')
 const dialogflow = require('dialogflow')
+const _ = require('lodash')
 const botium = require('botium-core')
 const debug = require('debug')('botium-cli-import-watson-intents')
 const helpers = require('./helpers')
@@ -78,9 +79,15 @@ const importConversations = (outputDir, botiumContext, filesWritten) => {
     if (intent.responses) {
       intent.responses.forEach((response) => {
         if (response.messages) {
-          const speechOutput = response.messages.find((message) => message.type === 0 && message.lang === botiumContext.agentInfo.language && message.speech)
-          if (speechOutput) {
-            intent.outputUtterances.push(speechOutput.speech)
+          const speechOutputs = response.messages
+            .filter((message) => message.type === 0 && message.lang === botiumContext.agentInfo.language && message.speech)
+            .reduce((acc, message) => {
+              if (_.isArray(message.speech)) acc = acc.concat(message.speech)
+              else acc.push(message.speech)
+              return acc
+            }, [])
+          if (speechOutputs) {
+            intent.outputUtterances.push(speechOutputs)
           } else {
             intent.outputUtterances.push([])
           }
