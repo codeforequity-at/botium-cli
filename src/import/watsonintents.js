@@ -17,10 +17,10 @@ module.exports.importWatsonIntents = (outputDir) => {
 
     async.series([
       (capsChecked) => {
-        if (botiumContext.driver.caps[botium.Capabilities.CONTAINERMODE] !== 'watsonconversation') {
+        if (botiumContext.driver.caps[botium.Capabilities.CONTAINERMODE] !== 'watson') {
           return capsChecked(`action only supported for IBM Watson Assistent drivers, found driver ${botiumContext.driver.caps[botium.Capabilities.CONTAINERMODE]}`)
         }
-        botiumContext.driver.caps[botium.Capabilities.WATSONCONVERSATION_COPY_WORKSPACE] = false
+        botiumContext.driver.caps['WATSON_COPY_WORKSPACE'] = false
         capsChecked()
       },
 
@@ -43,8 +43,8 @@ module.exports.importWatsonIntents = (outputDir) => {
       },
 
       (workspaceRead) => {
-        botiumContext.container.conversation.getWorkspace({
-          workspace_id: botiumContext.driver.caps[botium.Capabilities.WATSONCONVERSATION_WORKSPACE_ID],
+        botiumContext.container.pluginInstance.assistant.getWorkspace({
+          workspace_id: botiumContext.driver.caps['WATSON_WORKSPACE_ID'],
           export: true
         }, (err, workspace) => {
           if (err) {
@@ -121,7 +121,7 @@ module.exports.importWatsonLogs = (outputDir, filter, format) => {
 
     async.series([
       (capsChecked) => {
-        if (botiumContext.driver.caps[botium.Capabilities.CONTAINERMODE] !== 'watsonconversation') {
+        if (botiumContext.driver.caps[botium.Capabilities.CONTAINERMODE] !== 'watson') {
           return capsChecked(`action only supported for IBM Watson Assistent drivers, found driver ${botiumContext.driver.caps[botium.Capabilities.CONTAINERMODE]}`)
         }
         capsChecked()
@@ -146,8 +146,8 @@ module.exports.importWatsonLogs = (outputDir, filter, format) => {
       },
 
       (workspaceRead) => {
-        botiumContext.container.conversation.getWorkspace({
-          workspace_id: botiumContext.driver.caps[botium.Capabilities.WATSONCONVERSATION_WORKSPACE_ID],
+        botiumContext.container.pluginInstance.assistant.getWorkspace({
+          workspace_id: botiumContext.driver.caps['WATSON_WORKSPACE_ID'],
           export: false
         }, (err, workspace) => {
           if (err) {
@@ -164,7 +164,7 @@ module.exports.importWatsonLogs = (outputDir, filter, format) => {
         botiumContext.logs = []
 
         const pageParams = {
-          workspace_id: botiumContext.driver.caps[botium.Capabilities.WATSONCONVERSATION_WORKSPACE_ID],
+          workspace_id: botiumContext.driver.caps['WATSON_WORKSPACE_ID'],
           page_limit: 1000,
           sort: 'request_timestamp',
           filter
@@ -174,7 +174,7 @@ module.exports.importWatsonLogs = (outputDir, filter, format) => {
           () => hasMore,
           (pageRead) => {
             debug(`Watson workspace gettings logs page: ${pageParams.cursor}`)
-            botiumContext.container.conversation.listLogs(pageParams, (err, pageResult) => {
+            botiumContext.container.pluginInstance.assistant.listLogs(pageParams, (err, pageResult) => {
               if (err) {
                 pageRead(`Watson workspace connection failed: ${util.inspect(err)}`)
               } else {
