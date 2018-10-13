@@ -8,22 +8,22 @@
     var vm = this;
 
     vm.busy = false;
-    
+
     vm.sendtext = '';
     vm.sendchannel = '';
-    
+
     vm.messages = [];
-    
+
     vm.ChatSocket = null;
- 
+
     vm.initialize = function() {
       vm.startcontainer();
     };
-   
+
     vm.clearChat = function() {
       vm.messages.length = 0;
     };
-  
+
     vm.send = function() {
       if (!vm.sendtext) return;
       if (!vm.ChatSocket) return;
@@ -34,10 +34,10 @@
         channel: vm.sendchannel
       };
       vm.ChatSocket.emit('usersays', msg);
-      
+
       vm.messages.push(msg);
       vm.scrollChatBottom();
-      
+
       vm.sendtext = '';
     };
 
@@ -51,6 +51,7 @@
         channel: vm.sendchannel
       };
       vm.ChatSocket.emit('usersays', msg);
+      vm.messages.push(msg);
       vm.scrollChatBottom();
     });
     $scope.$on('socket:botsays', function(event, msg) {
@@ -69,16 +70,16 @@
         vm.ChatSocket = null;
       }
     });
-      
+
     vm.scrollChatBottom = function() {
       var scroller = document.getElementById("current-chat-area");
-      scroller.scrollTop = scroller.scrollHeight;        
+      scroller.scrollTop = scroller.scrollHeight;
     };
-    
+
     vm.saveTestCaseClick = function () {
       vm.openTestCaseNameDialog();
     };
-    
+
     vm.openTestCaseNameDialog = function(defaultName, errorMessage) {
       var modalInstance = $uibModal.open({
         templateUrl: 'savetestcase.html',
@@ -87,7 +88,7 @@
           var vmpopup = this;
           vmpopup.testcasename = defaultName;
           vmpopup.errormessage = errorMessage;
-          
+
           vmpopup.submit = function (isValid) {
             $scope.$broadcast('show-errors-check-validity');
             if (isValid) {
@@ -104,7 +105,7 @@
         vm.saveNewTestCase(testcasename);
       }, function () {
         $log.info('Modal dismissed at: ' + new Date());
-      });     
+      });
     };
 
     vm.saveNewTestCase = function(testcasename) {
@@ -118,9 +119,9 @@
           vm.openTestCaseNameDialog(testcasename, data.error);
         }
       });
-      
+
     };
-   
+
     vm.startcontainer = function() {
 
       vm.busy = true;

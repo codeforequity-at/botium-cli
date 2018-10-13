@@ -6,7 +6,7 @@
   DisplayChatbotMessage.$inject = [];
 
   function DisplayChatbotMessage() {
-    
+
     return {
       restrict: 'E',
       bindToController: {
@@ -17,20 +17,16 @@
         var vm = this;
         vm.msg = $scope.msg;
 
-        vm.text = null;
-        vm.structured = null;
-
-        if (vm.msg.messageText) {
-          vm.text = vm.msg.messageText;
-        } else {
-          vm.structured = vm.msg.sourceData;
-        }
+        vm.text = vm.msg.messageText;
+        vm.media = vm.msg.media;
+        vm.buttons = vm.msg.buttons;
+        vm.cards = vm.msg.cards;
 
         vm.quickReply = function(text, payload) {
-          $rootScope.$broadcast('reply', { message: { text: text, quick_reply: { payload: payload } } });
+          $rootScope.$broadcast('reply', payload || text);
         };
         vm.postback = function(text, payload) {
-          $rootScope.$broadcast('reply', { postback: { payload: payload } });
+          $rootScope.$broadcast('reply', payload || text);
         };
       }],
       controllerAs: 'vm'

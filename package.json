@@ -62,7 +62,7 @@
     "body-parser": "^1.18.2",
     "botium-connector-alexa-smapi": "0.0.2",
     "botium-connector-dialogflow": "0.0.4",
-    "botium-connector-directline3": "0.0.4",
+    "botium-connector-directline3": "0.0.5",
     "botium-connector-watson": "0.0.1",
     "botium-connector-webdriverio": "0.0.4",
     "botium-core": "1.3.28",
