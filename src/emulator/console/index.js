@@ -1,8 +1,7 @@
 const util = require('util')
 const fs = require('fs')
 const path = require('path')
-const chalk = require('chalk')
-const clear = require('clear')
+const term = require('terminal-kit').terminal
 const mkdirp = require('mkdirp')
 const figlet = require('figlet')
 const repl = require('repl')
@@ -24,44 +23,80 @@ module.exports = (outputDir) => {
       if (msg) {
         if (!msg.sender) msg.sender = 'bot'
         if (msg.messageText) {
-          console.log(chalk.blue('BOT SAYS ' + (msg.channel ? '(' + msg.channel + '): ' : ': ') + msg.messageText))
-        } else if (msg.sourceData && msg.sourceData.message) {
-          console.log(chalk.blue('BOT SAYS ' + (msg.channel ? '(' + msg.channel + '): ' : ': ')))
-          console.log(chalk.blue(JSON.stringify(msg.sourceData.message, null, 2)))
+          term.cyan('BOT SAYS ' + (msg.channel ? '(' + msg.channel + '): ' : ': ') + msg.messageText + '\n')
+        }
+        if (msg.media && msg.media.length > 0) {
+          term.cyan('BOT SENDS MEDIA ATTACHMENTS ' + (msg.channel ? '(' + msg.channel + '): ' : ': ') + '\n')
+          msg.media.forEach(m => {
+            term.cyan(' * URL: ' + m.mediaUri)
+            m.mimeType && term.cyan(' MIMETYPE: ' + m.mimeType)
+            m.altText && term.cyan(' ALTTEXT: ' + m.altText)
+            term('\n')
+          })
+        }
+        if (msg.buttons && msg.buttons.length > 0) {
+          term.cyan('BOT SENDS BUTTONS ' + (msg.channel ? '(' + msg.channel + '): ' : ': ') + '\n')
+          msg.buttons.forEach(b => {
+            term.cyan(' * TEXT: ' + b.text)
+            b.payload && term.cyan(' PAYLOAD: ' + b.payload)
+            term('\n')
+          })
+        }
+        if (msg.cards && msg.cards.length > 0) {
+          term.cyan('BOT SENDS CARDS ' + (msg.channel ? '(' + msg.channel + '): ' : ': ') + '\n')
+          msg.cards.forEach(c => {
+            term.cyan(' ***********************************************\n')
+            c.text && term.cyan(' * ' + c.text + '\n')
+            c.image && term.cyan(' * IMAGE: ' + c.image.mediaUri + '\n')
+            if (c.buttons && c.buttons.length > 0) {
+              term.cyan(' ***********************************************\n')
+              c.buttons.forEach(b => {
+                term.cyan(' * BUTTON: ' + b.text)
+                b.payload && term.cyan(' PAYLOAD: ' + b.payload)
+                term('\n')
+              })
+            }
+            term.cyan(' ***********************************************\n')
+          })
+        }
+
+        if (!msg.messageText && !msg.media && !msg.buttons && !msg.cards && msg.sourceData) {
+          term.cyan('BOT SAYS RICH MESSAGE ' + (msg.channel ? '(' + msg.channel + '): ' : ': \n'))
+          term.cyan(JSON.stringify(msg.sourceData, null, 2))
+          term('\n')
         }
         conversation.push(msg)
       }
     })
 
-    clear()
-    console.log(
-      chalk.yellow(
-        figlet.textSync('BOTIUM', { horizontalLayout: 'full' })
-      )
+    term.fullscreen(true)
+    term.yellow(
+      figlet.textSync('BOTIUM', { horizontalLayout: 'full' })
     )
-    const helpText = 'Enter "#SAVE <conversation name>" to save your conversation into your convo-directory, #EXIT to quit or just a message to send to your Chatbot!'
+    term('\n')
+    const helpText = 'Enter "#SAVE <conversation name>" to save your conversation into your convo-directory, #EXIT to quit or just a message to send to your Chatbot!\n'
 
-    console.log(chalk.green('Chatbot online.'))
-    console.log(chalk.green(helpText))
+    term.green('Chatbot online.\n')
+    term.green(helpText)
 
     const evaluator = (line) => {
       if (line) line = line.trim()
       if (!line) return
 
       if (line.toLowerCase() === '#exit') {
-        console.log(chalk.yellow('Botium stopping ...'))
-        container.Stop().then(() => container.Clean()).then(() => console.log(chalk.green('Botium stopped'))).then(() => process.exit(0)).catch((err) => console.log(chalk.red(err)))
+        term.yellow('Botium stopping ...\n')
+        container.Stop().then(() => container.Clean()).then(() => term.green('Botium stopped')).then(() => process.exit(0)).catch((err) => term.red(err))
       } else if (line.toLowerCase().startsWith('#save')) {
         const name = line.substr(5).trim()
         if (!name) {
-          console.log(chalk.red(helpText))
+          term.red(helpText)
           return
         }
         const filename = path.resolve(outputDir, slug(name) + '.convo.txt')
 
         try {
           fs.accessSync(filename, fs.constants.R_OK)
-          console.log(chalk.red('File ' + filename + ' already exists. Please choose another conversation name.'))
+          term.red('File ' + filename + ' already exists. Please choose another conversation name.\n')
           return
         } catch (err) {
         }
@@ -71,10 +106,10 @@ module.exports = (outputDir) => {
 
           const scriptData = compiler.Decompile([ { header: { name }, conversation } ], 'SCRIPTING_FORMAT_TXT')
           fs.writeFileSync(filename, scriptData)
-          console.log(chalk.green('Conversation written to file ' + filename))
+          term.green('Conversation written to file ' + filename + '\n')
           conversation.length = 0
         } catch (err) {
-          console.log(chalk.red(err))
+          term.red(err)
         }
       } else if (line.startsWith('#')) {
         const channel = line.substr(0, line.indexOf(' '))
@@ -92,5 +127,5 @@ module.exports = (outputDir) => {
       }
     }
     repl.start({prompt: '', eval: evaluator})
-  }).catch((err) => console.log(chalk.red(util.inspect(err))))
+  }).catch((err) => term.red(util.inspect(err)))
 }
