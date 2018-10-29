@@ -5,8 +5,8 @@
   TestCaseService.$inject = ['$resource'];
 
   function TestCaseService($resource) {
-    return $resource('/api/testcases/:sourceTag', {
-      sourceTag: '@sourceTag'
+    return $resource('/api/testcases/:filename', {
+      filename: '@sourceTag.filename'
     }, {
       update: {
         method: 'PUT'

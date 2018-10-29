@@ -6,14 +6,14 @@
 
   function TestCaseController($scope, $rootScope, $log, $q, $stateParams, Flash, TestCaseService) {
     var vm = this;
-    
-    vm.testcase = TestCaseService.get({ sourceTag: $stateParams.sourceTag }, function(response) {
+
+    vm.testcase = TestCaseService.get({ filename: $stateParams.filename }, function(response) {
       if (response.error) {
         vm.testcase = null;
         Flash.create('danger', 'Loading Test Case failed: ' + JSON.stringify(response.error));
       }
     });
-    
+
     vm.onaftersave = function() {
       return $q(function(resolve, reject) {
         TestCaseService.update(vm.testcase, function(data) {
@@ -28,7 +28,7 @@
         });
       });
     };
-    
+
   }
 
 })();

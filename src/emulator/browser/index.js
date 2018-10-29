@@ -1,7 +1,6 @@
 const fs = require('fs')
 const path = require('path')
-const chalk = require('chalk')
-const clear = require('clear')
+const term = require('terminal-kit').terminal
 const figlet = require('figlet')
 const express = require('express')
 const http = require('http')
@@ -17,13 +16,12 @@ module.exports = (outputDir, idePort) => {
   const driver = new BotDriver()
   let container = null
 
-  clear()
-  console.log(
-    chalk.yellow(
-      figlet.textSync('BOTIUM', { horizontalLayout: 'full' })
-    )
+  term.fullscreen(true)
+  term.yellow(
+    figlet.textSync('BOTIUM', { horizontalLayout: 'full' })
   )
-  console.log(chalk.yellow('Botium booting ... '))
+  term('\n')
+  term.yellow('Botium booting ...\n')
 
   const appIde = express()
   const server = http.createServer(appIde)
@@ -31,14 +29,14 @@ module.exports = (outputDir, idePort) => {
   const io = require('socket.io')(server)
   io.on('connection', (socket) => {
     socket.on('usersays', (msg) => {
-      console.log('received message ', msg)
+      debug('received message ', msg)
       container.UserSays(msg)
     })
   })
 
   server.listen(idePort, (err) => {
     if (err) {
-      console.log(chalk.red('error listening ' + idePort + ': ' + err))
+      term.red('error listening ' + idePort + ': ' + err + '\n')
       process.exit(1)
     } else {
       driver.Build().then((c) => {
@@ -50,10 +48,10 @@ module.exports = (outputDir, idePort) => {
           }
         })
 
-        console.log(chalk.green('Botium Browser Emulator listening on port ' + idePort))
-        console.log(chalk.green('Enter "#EXIT" to quit!'))
+        term.green('Botium Browser Emulator listening on port ' + idePort + '\n')
+        term.green('Enter "#EXIT" to quit!\n')
 
-        opn('http://127.0.0.1:' + idePort).catch((err) => console.log(chalk.yellow('Starting browser not possible (' + err + '), please connect manually (http://127.0.0.1:' + idePort + ')')))
+        opn('http://127.0.0.1:' + idePort).catch((err) => term.yellow('Starting browser not possible (' + err + '), please connect manually (http://127.0.0.1:' + idePort + ')\n'))
 
         const rl = readline.createInterface({
           input: process.stdin,
@@ -65,11 +63,11 @@ module.exports = (outputDir, idePort) => {
           if (!line) return
 
           if (line.toLowerCase() === '#exit') {
-            console.log(chalk.yellow('Botium stopping ...'))
-            container.Stop().then(() => container.Clean()).then(() => console.log(chalk.green('Botium stopped'))).then(() => process.exit(0)).catch((err) => console.log(chalk.red(err)))
+            term.yellow('Botium stopping ...')
+            container.Stop().then(() => container.Clean()).then(() => term.green('Botium stopped\n')).then(() => process.exit(0)).catch((err) => term.red(err + '\n'))
           }
         })
-      }).catch((err) => console.log(chalk.red(JSON.stringify(err))))
+      }).catch((err) => term.red(JSON.stringify(err)))
     }
   })
 
@@ -108,8 +106,7 @@ module.exports = (outputDir, idePort) => {
       container.Stop().then(() => container.Start()).then(() => {
         res.json({ success: true })
       }).catch((err) => {
-        console.log(err)
-
+        term.red('startcontainer error: ' + err + '\n')
         res.json({ success: false, error: err })
       })
     })
@@ -138,10 +135,10 @@ module.exports = (outputDir, idePort) => {
         const compiler = driver.BuildCompiler()
         const scriptData = compiler.Decompile([ req.body ], 'SCRIPTING_FORMAT_TXT')
         fs.writeFileSync(filename, scriptData)
-        console.log(chalk.green('Conversation written to file ' + filename))
+        term.green('Conversation written to file ' + filename + '\n')
         return res.json({ success: true, filename: filename })
       } catch (err) {
-        console.log(chalk.red('writeConvo error: ' + err))
+        term.red('writeConvo error: ' + err + '\n')
         return res.json({ success: false, error: err })
       }
     })
@@ -152,7 +149,7 @@ module.exports = (outputDir, idePort) => {
         compiler.ReadScriptsFromDirectory(outputDir)
         return res.json(compiler.convos.map((convo) => Object.assign({}, convo, { provider: null })))
       } catch (err) {
-        console.log(chalk.red('readConvos error: ' + err))
+        term.red('readConvos error: ' + err + '\n')
         return res.json({ success: false, error: err })
       }
     })
@@ -170,7 +167,7 @@ module.exports = (outputDir, idePort) => {
           return res.json({ success: false, error: 'no convo found' })
         }
       } catch (err) {
-        console.log(chalk.red('readConvo error: ' + err))
+        term.red('readConvo error: ' + err + '\n')
         return res.json({ success: false, error: err })
       }
     }).put((req, res) => {
@@ -190,10 +187,10 @@ module.exports = (outputDir, idePort) => {
         const scriptData = compiler.Decompile([ req.body ], 'SCRIPTING_FORMAT_TXT')
 
         fs.writeFileSync(filename, scriptData)
-        console.log(chalk.green('Conversation written to file ' + filename))
+        term.green('Conversation written to file ' + filename + '\n')
         return res.json({ success: true, filename: filename })
       } catch (err) {
-        console.log(chalk.red('writeConvo error: ' + err))
+        term.red('writeConvo error: ' + err + '\n')
         return res.json({ success: false, error: err })
       }
     })

@@ -8,7 +8,7 @@
 
     $locationProvider.html5Mode(false);
     $urlRouterProvider.otherwise('/testsuite');
-    
+
     $stateProvider
       .state('testsuite', {
         url: '/testsuite',
@@ -25,7 +25,7 @@
         controller: 'CaptureChatController',
         controllerAs: 'vm'
       }).state('testsuite.testcase', {
-        url: '/testcase/:sourceTag',
+        url: '/testcase/:filename',
         templateUrl: '/public/app/testcase/testcase.view.html',
         controller: 'TestCaseController',
         controllerAs: 'vm'
@@ -34,6 +34,6 @@
 
   angular.module('botiumemulator').run(function(editableOptions) {
     editableOptions.theme = 'bs3';
-  }); 
-  
+  });
+
 })();
