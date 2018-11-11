@@ -84,7 +84,7 @@ const handler = (argv) => {
   })
 
   let runner = null
-  
+
   compiler.convos.forEach((convo) => {
     debug(`adding test case ${convo.header.name} (from: ${util.inspect(convo.sourceTag)})`)
     const test = new Mocha.Test(convo.header.name, (testcaseDone) => {
