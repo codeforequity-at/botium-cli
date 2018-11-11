@@ -1,4 +1,5 @@
 module.exports = {
   run: () => require('./run'),
-  emulator: () => require('./emulator')
+  emulator: () => require('./emulator'),
+  box: () => require('./box')
 }

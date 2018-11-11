@@ -159,5 +159,7 @@ module.exports = {
       describe: 'Options for mocha reporter, either as JSON, or as key-value pairs ("option1=value1,option2=value2,..."). For details see documentation of the used mocha reporter.'
     })
   },
-  handler
+  handler,
+  parseReporterOptions,
+  outputTypes
 }
