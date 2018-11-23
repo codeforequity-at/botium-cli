@@ -10,10 +10,10 @@ const handleConfig = (argv) => {
     require('debug').enable('botium*')
   }
 
-  if (argv.config || argv.c) {
-    process.env.BOTIUM_CONFIG = argv.config || argv.c
-    debug(`Using Botium configuration file ${process.env.BOTIUM_CONFIG}`)
+  if (!process.env.BOTIUM_CONFIG) {
+    process.env.BOTIUM_CONFIG = argv.config
   }
+  debug(`Using Botium configuration file ${process.env.BOTIUM_CONFIG}`)
 
   const envConvoDirs = Object.keys(process.env).filter(e => e.startsWith('BOTIUM_CONVOS')).map(e => process.env[e]).filter(e => e)
   if (envConvoDirs && envConvoDirs.length > 0) {
@@ -61,6 +61,7 @@ yargsCmd.usage('Botium CLI\n\nUsage: $0 [options]') // eslint-disable-line
   })
   .option('config', {
     alias: 'c',
+    envPrefix: 'BOTIUM_CONFIG',
     describe: 'Path to the Botium configuration file (also read from env variable "BOTIUM_CONFIG")',
     nargs: 1,
     default: './botium.json'
