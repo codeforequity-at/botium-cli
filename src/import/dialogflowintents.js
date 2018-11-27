@@ -99,7 +99,7 @@ const importConversations = (outputDir, botiumContext, filesWritten) => {
   })
   Object.keys(intentsById).forEach((intentId) => {
     const intent = intentsById[intentId]
-    console.log(intent.name + '/' + intent.parentId)
+    debug(intent.name + '/' + intent.parentId)
     if (intent.parentId) {
       const parent = intentsById[intent.parentId]
       if (parent) {
@@ -156,7 +156,7 @@ const importConversations = (outputDir, botiumContext, filesWritten) => {
         },
         conversation: cp
       }
-      console.log(convo)
+      debug(convo)
       try {
         const filename = helpers.writeConvo(botiumContext.compiler, convo, outputDir)
         console.log(`SUCCESS: wrote convo to file ${filename}`)
