@@ -65,6 +65,7 @@ const handler = (argv) => {
   })
 
   const suite = Mocha.Suite.create(mocha.suite, process.env.BOTIUM_TESTSUITENAME || argv.testsuitename)
+  suite.timeout(argv.timeout)
   suite.beforeAll((done) => {
     driver.Build()
       .then((container) => {
