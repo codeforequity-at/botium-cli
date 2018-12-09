@@ -1,6 +1,6 @@
 {
   "name": "botium-cli",
-  "version": "0.0.34",
+  "version": "0.0.35",
   "description": "Botium - The Selenium for Chatbots",
   "main": "dist/botium-cli-cjs.js",
   "module": "dist/botium-cli-es.js",
@@ -27,6 +27,7 @@
       "node_modules/botium-connector-alexa-smapi",
       "node_modules/botium-connector-directline3",
       "node_modules/botium-connector-dialogflow",
+      "node_modules/botium-connector-echo",
       "node_modules/botium-connector-watson",
       "node_modules/botium-connector-webdriverio",
       "node_modules/opn",
