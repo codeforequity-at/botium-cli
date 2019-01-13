@@ -42,31 +42,72 @@ Got get help on the command line options:
 
 ```
 > botium-cli help
-Botium CLI
-
-Usage: botium-cli.js [options]
-
-Commands:
-  botium-cli.js run [output]     Run Botium convo files and output test report
-                                 with Mocha test runner
-  botium-cli.js import [source]  Importing conversations for Botium
-  botium-cli.js emulator [ui]    Launch Botium emulator
-  botium-cli.js box [output]     Run Test Project on Botium Box and output test
-                                 report with Mocha test runner
-  botium-cli.js init             Setup a directory for Botium usage
-  botium-cli.js agent            Launch Botium agent
-
-Options:
-  --help, -h     Show help                                             [boolean]
-  --version, -V  Show version number                                   [boolean]
-  --verbose, -v  Enable verbose output (also read from env variable
-                 "BOTIUM_VERBOSE" - "1" means verbose)          [default: false]
-  --convos, -C   Path to a directory holding your convo files. Can be specified
-                 more than once, ending in "--" ("... --convos dir1 dir2 dir3 --
-                 ...") (also read from env variables starting with
-                 "BOTIUM_CONVOS")                         [array] [default: "."]
-  --config, -c   Path to the Botium configuration file (also read from env
-                 variable "BOTIUM_CONFIG")            [default: "./botium.json"]
-
-You need at least one command before moving on
 ```
+
+# Botium Capabilities configuration
+
+The chatbot capabilities are described in a configuration file. By default, the file named "botium.json" in the current directory is used, but it can be specified with the "--config" command line parameter.
+The configuration file holds capabilities, envs and sources. Configuration via environment variables is supported as well.
+
+
+```
+{
+  "botium": {
+    "Capabilities": {
+      "PROJECTNAME": "botium-sample1",
+      ....
+    },
+    "Sources: {
+      ....
+    },
+    "Envs": {
+      "NODE_TLS_REJECT_UNAUTHORIZED": 0,
+      ....
+    }
+  }
+}
+```
+
+# Commands
+
+## botium-cli init
+
+Prepare a directory for Botium usage:
+* Adds a simple botium.json
+* Adds a sample convo file
+
+## botium-cli run
+
+Automatically run all your scripted conversations against your chatbot and output a test report
+
+## botium-cli import
+
+Import conversation scripts or utterances from some source (for example, from IBM Watson workspace)
+
+## botium-cli emulator
+
+Especially with structured messages, it can become uncomfortable to write conversation files manually. Botium contains two emulators to support you with browsing and writing your conversation files:
+
+### Browser Emulator
+The Botium Browser Emulator provides a simple browser interface to record and organize your test cases, and to interact with your Chatbot.
+
+![Botium Browser Emulator](https://github.com/codeforequity-at/botium-docs/blob/master/deprecated/screenshots/ide_demo.png)
+
+Running it is simple:
+
+    $ botium-cli emulator browser
+
+To specify directory holding your convo files and to specify the configuration file:
+
+    $ botium-cli emulator browser --convos=./spec/convo --config=./spec/botium.json
+
+### Console Emulator
+The Botium Console Emulator is a basic command line interface to your chatbot running within Botium . You can record and save your conversation files.
+
+![Botium Console Emulator](https://github.com/codeforequity-at/botium-docs/blob/master/deprecated/screenshots/chat.png)
+
+Running it is simple:
+
+    $ botium-cli emulator console
+
+
