@@ -36,7 +36,12 @@ const importIntents = (outputDir, botiumContext, filesWritten) => {
         },
         {
           sender: 'bot',
-          messageText: intent.name
+          asserters: [
+            {
+              name: 'INTENT',
+              args: [intent.name]
+            }
+          ]
         }
       ]
     }

@@ -75,7 +75,12 @@ module.exports.importWatsonIntents = (outputDir) => {
                   },
                   {
                     sender: 'bot',
-                    messageText: intent.intent
+                    asserters: [
+                      {
+                        name: 'INTENT',
+                        args: [intent.intent]
+                      }
+                    ]
                   }
                 ]
               }
