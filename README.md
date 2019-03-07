@@ -9,6 +9,8 @@ Botium CLI - The Selenium for Chatbots
 
 Botium is the Selenium for chatbots. Botium CLI is the swiss army knife of Botium.
 
+**_IF YOU LIKE WHAT YOU SEE, PLEASE CONSIDER GIVING US A STAR ON GITHUB!_**
+
 # How do I get help ?
 * Read the [Botium in a Nutshell](https://medium.com/@floriantreml/botium-in-a-nutshell-part-1-overview-f8d0ceaf8fb4) series
 * If you think you found a bug in Botium, please use the Github issue tracker.
