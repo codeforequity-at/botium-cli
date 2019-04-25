@@ -52,11 +52,16 @@ const handler = (argv) => {
     compiler.ReadScriptsFromDirectory(convodir, process.env.BOTIUM_FILTER || argv.filter)
   })
   debug(`ready reading convos (${compiler.convos.length}), expanding convos ...`)
-  compiler.ExpandConvos()
   if (process.env.BOTIUM_EXPANDUTTERANCES === '1' || argv.expandutterances) {
-    debug(`ready expanding convos (${compiler.convos.length}), expanding utterances ...`)
+    debug(`expanding utterances ...`)
     compiler.ExpandUtterancesToConvos()
   }
+  if (process.env.BOTIUM_EXPANDSCRIPTINGMEMORY === '1' || argv.expandscriptingmemory) {
+    debug(`expanding scripting memory ...`)
+    compiler.ExpandScriptingMemoryToConvos()
+  }
+  compiler.ExpandConvos()
+
   debug(`ready expanding convos and utterances, number of test cases: (${compiler.convos.length}).`)
 
   const mocha = new Mocha({
@@ -149,6 +154,10 @@ module.exports = {
     })
     yargs.option('expandutterances', {
       describe: 'Expand all utterances (except INCOMPREHENSION) to simple Question/Answer convos (also read from env variable "BOTIUM_EXPANDUTTERANCES" - "1" means yes)',
+      default: false
+    })
+    yargs.option('expandscriptingmemory', {
+      describe: 'Expand scripting memory tables to separate convos (also read from env variable "BOTIUM_EXPANDSCRIPTINGMEMORY" - "1" means yes)',
       default: false
     })
     yargs.option('timeout', {
