@@ -13,13 +13,13 @@ const handler = (argv) => {
   }
 
   if (argv.source === 'watson-intents') {
-    require('./watsonintents').importWatsonIntents(argv.convos[0])
+    require('./watsonintents').importWatsonIntents(argv.convos[0]).catch(() => {})
   } else if (argv.source === 'watson-logs') {
-    require('./watsonintents').importWatsonLogs(argv.convos[0], argv.watsonfilter, argv.watsonformat || 'convo')
+    require('./watsonintents').importWatsonLogs(argv.convos[0], argv.watsonfilter, argv.watsonformat || 'convo').catch(() => {})
   } else if (argv.source === 'dialogflow-intents') {
-    require('./dialogflowintents').importDialogflowIntents(argv.convos[0])
+    require('./dialogflowintents').importDialogflowIntents(argv.convos[0], argv.agentzip).catch(() => {})
   } else if (argv.source === 'dialogflow-conversations') {
-    require('./dialogflowintents').importDialogflowConversations(argv.convos[0])
+    require('./dialogflowintents').importDialogflowConversations(argv.convos[0], argv.agentzip).catch(() => {})
   }
 }
 
@@ -36,6 +36,9 @@ module.exports = {
     })
     yargs.option('watsonformat', {
       describe: 'Format for downloading the watson logs. "convo" for full conversations, "intent" for intent-list only (default: "convo")'
+    })
+    yargs.option('agentzip', {
+      describe: 'Path to the exported Dialogflow agent zip file. If not given, it will be downloaded.'
     })
   },
   handler
