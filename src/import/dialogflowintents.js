@@ -5,7 +5,7 @@ const AdmZip = require('adm-zip')
 const dialogflow = require('dialogflow')
 const _ = require('lodash')
 const botium = require('botium-core')
-const debug = require('debug')('botium-cli-import-watson-intents')
+const debug = require('debug')('botium-cli-import-dialogflow-intents')
 const helpers = require('./helpers')
 
 const importIntents = (outputDir, botiumContext, filesWritten) => {
