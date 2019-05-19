@@ -7,11 +7,19 @@ const addContext = require('mochawesome/addContext')
 const debug = require('debug')('botium-cli-run')
 
 const outputTypes = [
+  'dot',
+  'nyan',
+  'landing',
   'tap',
   'json',
+  'json-stream',
   'xunit',
   'spec',
   'list',
+  'min',
+  'doc',
+  'progress',
+  'csv',
   'mochawesome'
 ]
 
@@ -31,6 +39,26 @@ const parseReporterOptions = (args) => {
     }
     return acc
   }, {})
+}
+
+class CsvReporter {
+  constructor (runner) {
+    Mocha.reporters.Base.call(this, runner)
+
+    const quote = (str) => str ? str.replace('"', '""') : ''
+
+    runner.on('start', function () {
+      console.log('STATUS,SUITE,TEST,DURATION,MESSAGE')
+    })
+
+    runner.on('pass', function (test) {
+      console.log(`"OK","${quote(test.parent && test.parent.title)}","${quote(test.title)}",${test.duration},""`)
+    })
+
+    runner.on('fail', function (test, err) {
+      console.log(`"NOK","${quote(test.parent && test.parent.title)}","${quote(test.title)}",${test.duration},"${quote(err.message)}"`)
+    })
+  }
 }
 
 const handler = (argv) => {
@@ -65,7 +93,7 @@ const handler = (argv) => {
   debug(`ready expanding convos and utterances, number of test cases: (${compiler.convos.length}).`)
 
   const mocha = new Mocha({
-    reporter: argv.output,
+    reporter: argv.output === 'csv' ? CsvReporter : argv.output,
     reporterOptions
   })
 
