@@ -41,6 +41,10 @@ const parseReporterOptions = (args) => {
   }, {})
 }
 
+const parseReporter = (output) => {
+  return output === 'csv' ? CsvReporter : output
+}
+
 class CsvReporter {
   constructor (runner) {
     Mocha.reporters.Base.call(this, runner)
@@ -93,7 +97,7 @@ const handler = (argv) => {
   debug(`ready expanding convos and utterances, number of test cases: (${compiler.convos.length}).`)
 
   const mocha = new Mocha({
-    reporter: argv.output === 'csv' ? CsvReporter : argv.output,
+    reporter: parseReporter(argv.output),
     reporterOptions
   })
 
@@ -199,5 +203,6 @@ module.exports = {
   },
   handler,
   parseReporterOptions,
+  parseReporter,
   outputTypes
 }

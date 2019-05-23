@@ -5,7 +5,7 @@ const Mocha = require('mocha')
 const _ = require('lodash')
 const addContext = require('mochawesome/addContext')
 const debug = require('debug')('botium-cli-box')
-const { parseReporterOptions, outputTypes } = require('../run/index')
+const { parseReporterOptions, parseReporter, outputTypes } = require('../run/index')
 
 const handleArrayParam = (argv, paramName, envNameStart) => {
   argv[paramName] = argv[paramName] ? _.isArray(argv[paramName]) ? argv[paramName] : [ argv[paramName] ] : []
@@ -74,7 +74,7 @@ const handler = (argv) => {
     debug(`Botium Box sent response: ${util.inspect(body)}`)
 
     const mocha = new Mocha({
-      reporter: argv.output,
+      reporter: parseReporter(argv.output),
       reporterOptions
     })
 
