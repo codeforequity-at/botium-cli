@@ -5,7 +5,7 @@ const AdmZip = require('adm-zip')
 const dialogflow = require('dialogflow')
 const _ = require('lodash')
 const botium = require('botium-core')
-const debug = require('debug')('botium-cli-import-watson-intents')
+const debug = require('debug')('botium-cli-import-dialogflow-intents')
 const helpers = require('./helpers')
 
 const importIntents = (outputDir, botiumContext, filesWritten) => {
@@ -113,6 +113,11 @@ const importConversations = (outputDir, botiumContext, filesWritten) => {
       } else {
         debug(`Parent intent with id ${intent.parentId} not found for ${intent.name}, ignoring intent`)
       }
+    }
+  })
+  Object.keys(intentsById).forEach((intentId) => {
+    const intent = intentsById[intentId]
+    if (intent.parentId) {
       delete intentsById[intentId]
     }
   })
@@ -175,10 +180,26 @@ const importConversations = (outputDir, botiumContext, filesWritten) => {
   filesWritten()
 }
 
-const importDialogflow = (outputDir, importFunction) => {
+const loadAgentZip = (filenameOrRawData) => {
+  const result = {}
+  result.unzip = new AdmZip(filenameOrRawData)
+  result.zipEntries = result.unzip.getEntries()
+  result.zipEntries.forEach((zipEntry) => {
+    debug(`Dialogflow agent got entry: ${zipEntry.entryName}`)
+  })
+  result.agentInfo = JSON.parse(result.unzip.readAsText('agent.json'))
+  debug(`Dialogflow agent info: ${util.inspect(result.agentInfo)}`)
+  return result
+}
+
+const importDialogflow = (outputDir, agentzip, importFunction) => {
   return new Promise((resolve, reject) => {
+    const caps = {}
+    if (agentzip) {
+      caps[botium.Capabilities.CONTAINERMODE] = 'echo'
+    }
     const botiumContext = {
-      driver: new botium.BotDriver(),
+      driver: new botium.BotDriver(caps),
       compiler: null,
       container: null,
       agentsClient: null,
@@ -190,8 +211,10 @@ const importDialogflow = (outputDir, importFunction) => {
 
     async.series([
       (capsChecked) => {
-        if (botiumContext.driver.caps[botium.Capabilities.CONTAINERMODE] !== 'dialogflow') {
-          return capsChecked(`action only supported for Google Dialogflow drivers, found driver ${botiumContext.driver.caps[botium.Capabilities.CONTAINERMODE]}`)
+        if (!agentzip) {
+          if (botiumContext.driver.caps[botium.Capabilities.CONTAINERMODE] !== 'dialogflow') {
+            return capsChecked(`action only supported for Google Dialogflow drivers, found driver ${botiumContext.driver.caps[botium.Capabilities.CONTAINERMODE]}`)
+          }
         }
         capsChecked()
       },
@@ -216,44 +239,48 @@ const importDialogflow = (outputDir, importFunction) => {
       },
 
       (agentRead) => {
-        try {
-          botiumContext.agentsClient = new dialogflow.AgentsClient(botiumContext.container.pluginInstance.sessionOpts)
-          botiumContext.projectPath = botiumContext.agentsClient.projectPath(botiumContext.container.caps['DIALOGFLOW_PROJECT_ID'])
-          agentRead()
-        } catch (err) {
-          console.log(err)
-          agentRead(err)
+        if (!agentzip) {
+          try {
+            botiumContext.agentsClient = new dialogflow.AgentsClient(botiumContext.container.pluginInstance.sessionOpts)
+            botiumContext.projectPath = botiumContext.agentsClient.projectPath(botiumContext.container.caps['DIALOGFLOW_PROJECT_ID'])
+          } catch (err) {
+            console.log(err)
+            return agentRead(err)
+          }
         }
+        agentRead()
       },
 
       (agentExported) => {
-        botiumContext.agentsClient.exportAgent({ parent: botiumContext.projectPath })
-          .then(responses => responses[0].promise())
-          .then(responses => {
-            try {
-              let buf = Buffer.from(responses[0].agentContent, 'base64')
-              botiumContext.unzip = new AdmZip(buf)
-              botiumContext.zipEntries = botiumContext.unzip.getEntries()
-              botiumContext.zipEntries.forEach((zipEntry) => {
-                debug(`Dialogflow agent got entry: ${zipEntry.entryName}`)
-              })
-              botiumContext.agentInfo = JSON.parse(botiumContext.unzip.readAsText('agent.json'))
-              debug(`Dialogflow agent info: ${util.inspect(botiumContext.agentInfo)}`)
+        if (agentzip) {
+          try {
+            Object.assign(botiumContext, loadAgentZip(agentzip))
+            agentExported()
+          } catch (err) {
+            agentExported(`Dialogflow agent unpack failed: ${util.inspect(err)}`)
+          }
+        } else {
+          botiumContext.agentsClient.exportAgent({ parent: botiumContext.projectPath })
+            .then(responses => responses[0].promise())
+            .then(responses => {
+              try {
+                let buf = Buffer.from(responses[0].agentContent, 'base64')
+                Object.assign(botiumContext, loadAgentZip(buf))
 
-              agentExported()
-            } catch (err) {
-              agentExported(`Dialogflow agent unpack failed: ${util.inspect(err)}`)
-            }
-          })
-          .catch(err => {
-            agentExported(`Dialogflow agent connection failed: ${util.inspect(err)}`)
-          })
+                agentExported()
+              } catch (err) {
+                agentExported(`Dialogflow agent unpack failed: ${util.inspect(err)}`)
+              }
+            })
+            .catch(err => {
+              agentExported(`Dialogflow agent connection failed: ${util.inspect(err)}`)
+            })
+        }
       },
 
       (filesWritten) => {
         importFunction(outputDir, botiumContext, filesWritten)
       }
-
     ],
     (err) => {
       if (err) {
@@ -264,5 +291,5 @@ const importDialogflow = (outputDir, importFunction) => {
   })
 }
 
-module.exports.importDialogflowIntents = (outputDir) => importDialogflow(outputDir, importIntents)
-module.exports.importDialogflowConversations = (outputDir) => importDialogflow(outputDir, importConversations)
+module.exports.importDialogflowIntents = (outputDir, agentzip) => importDialogflow(outputDir, agentzip, importIntents)
+module.exports.importDialogflowConversations = (outputDir, agentzip) => importDialogflow(outputDir, agentzip, importConversations)
