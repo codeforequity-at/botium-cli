@@ -16,10 +16,6 @@ const handler = (argv) => {
     require('./watsonintents').importWatsonIntents(argv.convos[0]).catch(() => {})
   } else if (argv.source === 'watson-logs') {
     require('./watsonintents').importWatsonLogs(argv.convos[0], argv.watsonfilter, argv.watsonformat || 'convo').catch(() => {})
-  } else if (argv.source === 'dialogflow-intents') {
-    require('./dialogflowintents').importDialogflowIntents(argv.convos[0], argv.agentzip).catch(() => {})
-  } else if (argv.source === 'dialogflow-conversations') {
-    require('./dialogflowintents').importDialogflowConversations(argv.convos[0], argv.agentzip).catch(() => {})
   }
 }
 
@@ -29,16 +25,13 @@ module.exports = {
   builder: (yargs) => {
     yargs.positional('source', {
       describe: 'Specify the source of the conversations for the configured chatbot',
-      choices: [ 'watson-intents', 'watson-logs', 'dialogflow-intents', 'dialogflow-conversations' ]
+      choices: [ 'watson-intents', 'watson-logs' ]
     })
     yargs.option('watsonfilter', {
       describe: 'Filter for downloading the watson logs, for example "response_timestamp>=2018-08-20,response_timestamp<2018-08-22"'
     })
     yargs.option('watsonformat', {
       describe: 'Format for downloading the watson logs. "convo" for full conversations, "intent" for intent-list only (default: "convo")'
-    })
-    yargs.option('agentzip', {
-      describe: 'Path to the exported Dialogflow agent zip file. If not given, it will be downloaded.'
     })
   },
   handler
