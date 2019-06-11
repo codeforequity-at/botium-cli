@@ -106,8 +106,6 @@
     "slug": "^0.9.1",
     "socket.io": "^2.1.1",
     "terminal-kit": "^1.26.3",
-    "watson-developer-cloud": "^3.2.1",
-    "xlsx": "^0.13.5",
     "yargs": "^11.0.0"
   }
 }
