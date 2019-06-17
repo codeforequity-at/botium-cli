@@ -77,7 +77,7 @@
     "botium-connector-alexa-avs": "0.0.3",
     "botium-connector-alexa-smapi": "0.0.5",
     "botium-connector-botkit": "0.0.3",
-    "botium-connector-botkit-websocket": "0.1.0",
+    "botium-connector-botkit-websocket": "0.1.1",
     "botium-connector-botpress": "0.0.4",
     "botium-connector-dialogflow": "0.0.7",
     "botium-connector-directline3": "0.0.14",
