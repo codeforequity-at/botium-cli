@@ -126,6 +126,6 @@ module.exports = (outputDir) => {
         conversation.push(msg)
       }
     }
-    repl.start({prompt: '', eval: evaluator})
+    repl.start({ prompt: '', eval: evaluator })
   }).catch((err) => term.red(util.inspect(err)))
 }
