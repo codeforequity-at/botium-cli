@@ -20,14 +20,9 @@ Botium is the Selenium for chatbots. Botium CLI is the swiss army knife of Botiu
 
 ## Installation
 
-### Download latest executable, standalone program from [here](http://botium-artifacts.s3-website-eu-west-1.amazonaws.com/) ###
-
-In case you have Node.js installed on your system, just install the botium-cli module globally:
-
 ```
 > npm install -g botium-cli
 ```
-
 
 ## Usage
 
