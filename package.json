@@ -12,6 +12,7 @@
   },
   "scripts": {
     "build": "npm run eslint && rollup -c",
+    "builddocker": "docker build . -t botium/botium-cli:$npm_package_version",
     "eslint": "eslint \"./src/**/*.js\" \"./bin/**/*.js\""
   },
   "repository": {
