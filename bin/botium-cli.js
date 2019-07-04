@@ -51,6 +51,7 @@ yargsCmd.usage('Botium CLI\n\nUsage: $0 [options]') // eslint-disable-line
   .command(wrapHandler(require('../src/box')))
   .command(wrapHandler(require('../src/init')))
   .command(wrapHandler(require('../src/init-alexa-avs')))
+  .command(wrapHandler(require('../src/init-dev')))
   .command(require('../src/agent'))
   .option('verbose', {
     alias: 'v',

@@ -1,0 +1,19 @@
+echo
+
+#begin
+MYASSERTER arg1|arg2
+
+#me
+Hello
+
+#bot
+MYASSERTER arg1|arg2
+
+#me
+Hello again!
+
+#bot
+MYASSERTER arg1|arg2
+
+#end
+MYASSERTER arg1|arg2

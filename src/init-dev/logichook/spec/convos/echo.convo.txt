@@ -1,0 +1,18 @@
+echo
+
+#me
+Hello
+
+#bot
+You said: Hello
+MYLOGICHOOK arg1|arg2
+
+#me
+Hello again!
+
+#bot
+You said: Hello again!
+MYLOGICHOOK arg1|arg2
+
+#end
+MYLOGICHOOK arg1|arg2

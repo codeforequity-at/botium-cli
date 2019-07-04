@@ -1,0 +1,28 @@
+{
+  "botium": {
+    "Capabilities": {
+      "PROJECTNAME": "Botium Logic Hook Sample",
+      "CONTAINERMODE": "echo",
+      "LOGIC_HOOKS": [
+        {
+          "ref": "MYLOGICHOOK",
+          "src": "./src/MyCustomLogicHook.js",
+          "global": false,
+          "args": {
+            "globalArg1": "globalArg1Value",
+            "globalArg2": "globalArg2Value"
+          }
+        },
+        {
+          "ref": "MYGLOBALLOGICHOOK",
+          "src": "./src/MyGlobalLogicHook.js",
+          "global": true,
+          "args": {
+            "globalArg1": "globalArg1Value",
+            "globalArg2": "globalArg2Value"
+          }
+        }
+      ]
+    }
+  }
+}
