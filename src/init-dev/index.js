@@ -18,7 +18,7 @@ const handler = (argv) => {
 
 module.exports = {
   command: 'init-dev [project]',
-  describe: 'Setup a development project for Botium asserters in the current directory',
+  describe: 'Setup a development project for Botium asserters or logic hooks in the current directory',
   builder: (yargs) => {
     yargs.positional('project', {
       describe: 'Project type',
