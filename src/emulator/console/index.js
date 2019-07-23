@@ -117,12 +117,12 @@ module.exports = (outputDir) => {
 
         const msg = { messageText: text, sender: 'me', channel: channel }
 
-        container.UserSays(msg)
+        container.UserSays(msg).catch((err) => term.red(util.inspect(err)))
         conversation.push(msg)
       } else {
         const msg = { messageText: line, sender: 'me' }
 
-        container.UserSays(msg)
+        container.UserSays(msg).catch((err) => term.red(util.inspect(err)))
         conversation.push(msg)
       }
     }
