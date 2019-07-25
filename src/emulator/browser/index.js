@@ -1,3 +1,4 @@
+const util = require('util')
 const fs = require('fs')
 const path = require('path')
 const term = require('terminal-kit').terminal
@@ -30,7 +31,7 @@ module.exports = (outputDir, idePort) => {
   io.on('connection', (socket) => {
     socket.on('usersays', (msg) => {
       debug('received message ', msg)
-      container.UserSays(msg)
+      container.UserSays(msg).catch((err) => term.red(util.inspect(err)))
     })
   })
 
