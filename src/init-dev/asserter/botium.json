@@ -1,0 +1,19 @@
+{
+  "botium": {
+    "Capabilities": {
+      "PROJECTNAME": "Botium Asserters Sample",
+      "CONTAINERMODE": "echo",
+      "ASSERTERS": [
+        {
+          "ref": "MYASSERTER",
+          "src": "./src/MyCustomAsserter.js",
+          "global": false,
+          "args": {
+            "globalArg1": "globalArg1Value",
+            "globalArg2": "globalArg2Value"
+          }
+        }
+      ]
+    }
+  }
+}

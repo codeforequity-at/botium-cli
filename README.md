@@ -75,6 +75,13 @@ Prepare a directory for Botium usage:
 * Adds a simple botium.json
 * Adds a sample convo file
 
+## botium-cli init-dev [asserter|logichook]
+
+Setup a development project for Botium asserters or logic hooks in the current directory:
+* Adds a Javascript source file with the skeleton code
+* Adds a botium.json with asserter/logic hook registration
+* Adds a sample convo file
+
 ## botium-cli run
 
 Automatically run all your scripted conversations against your chatbot and output a test report
