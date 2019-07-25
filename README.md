@@ -24,6 +24,8 @@ Botium is the Selenium for chatbots. Botium CLI is the swiss army knife of Botiu
 > npm install -g botium-cli
 ```
 
+_See below to see instructions how to use the Botium CLI docker image_
+
 ## Usage
 
 __Did you read the [Botium in a Nutshell](https://medium.com/@floriantreml/botium-in-a-nutshell-part-1-overview-f8d0ceaf8fb4) articles ? Be warned, without prior knowledge of Botium you won't be able to properly use this library!__
@@ -77,7 +79,7 @@ Prepare a directory for Botium usage:
 
 Automatically run all your scripted conversations against your chatbot and output a test report
 
-## botium-cli import
+## botium-cli *import
 
 Import conversation scripts or utterances from some source (for example, from IBM Watson workspace)
 
@@ -99,12 +101,31 @@ To specify directory holding your convo files and to specify the configuration f
     $ botium-cli emulator browser --convos=./spec/convo --config=./spec/botium.json
 
 ### Console Emulator
-The Botium Console Emulator is a basic command line interface to your chatbot running within Botium . You can record and save your conversation files.
+The Botium Console Emulator is a basic command line interface to your chatbot running within Botium. You can record and save your conversation files.
 
 ![Botium Console Emulator](https://github.com/codeforequity-at/botium-docs/blob/master/deprecated/screenshots/chat.png)
 
 Running it is simple:
 
     $ botium-cli emulator console
+
+
+# Using the Botium CLI docker image
+
+Instead of installing the NPM package, you can use the Botium CLI docker image instead:
+
+    $ docker run --rm -v $(pwd):/app/workdir botium/botium-cli
+
+You can use all commands as described above. Special considerations:
+
+* You cannot use absolute pathes, but all pathes should be given relative to the current working directory. The current working directory is mapped to the docker container with the _-v_ switch (above this is mapped to the current working directory)
+* For running the console emulator, you will have to add the _-it_ flag to the docker command to enable terminal interactions:
+```
+$ docker run --rm -v $(pwd):/app/workdir -it botium/botium-cli emulator browser
+```
+* For running the browser emulator, you will have to expose the emulator port from the docker container by adding the _-p 3000:3000_ switch:
+```
+$ docker run --rm -v $(pwd):/app/workdir -p 3000:3000 botium/botium-cli emulator browser
+```
 
 
