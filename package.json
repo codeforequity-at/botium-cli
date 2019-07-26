@@ -1,6 +1,6 @@
 {
   "name": "botium-cli",
-  "version": "0.0.52",
+  "version": "0.0.53",
   "description": "Botium - The Selenium for Chatbots",
   "main": "dist/botium-cli-cjs.js",
   "module": "dist/botium-cli-es.js",
@@ -60,7 +60,7 @@
     "botium-connector-watson": "0.0.8",
     "botium-connector-webdriverio": "0.1.2",
     "botium-connector-wechat": "0.0.1",
-    "botium-core": "1.5.2",
+    "botium-core": "1.5.3",
     "chai": "^4.2.0",
     "debug": "^4.1.1",
     "ejs": "^2.6.2",
