@@ -8,7 +8,7 @@ const debug = require('debug')('botium-cli-box')
 const { parseReporterOptions, parseReporter, outputTypes } = require('../run/index')
 
 const handleArrayParam = (argv, paramName, envNameStart) => {
-  argv[paramName] = argv[paramName] ? _.isArray(argv[paramName]) ? argv[paramName] : [ argv[paramName] ] : []
+  argv[paramName] = argv[paramName] ? _.isArray(argv[paramName]) ? argv[paramName] : [argv[paramName]] : []
   const envParams = Object.keys(process.env).filter(e => e.startsWith(envNameStart)).map(e => process.env[e]).filter(e => e)
   if (envParams) {
     argv[paramName] = argv[paramName].concat(envParams)
@@ -50,12 +50,12 @@ const handler = (argv) => {
     WAIT: '1',
     REPORTER: 'json'
   }
-  if (argv.buildid) boxPostParams['BUILDID'] = argv.buildid
-  if (argv.buildcomment) boxPostParams['BUILDCOMMENT'] = argv.buildcomment
-  if (argv.tags) boxPostParams['TAG'] = argv.tags.map(t => `${t}`)
-  if (argv.caps) boxPostParams['CAPS'] = buildBotiumCaps(argv.caps)
-  if (argv.sources) boxPostParams['SOURCES'] = buildBotiumCaps(argv.sources)
-  if (argv.envs) boxPostParams['ENVS'] = buildBotiumCaps(argv.envs)
+  if (argv.buildid) boxPostParams.BUILDID = argv.buildid
+  if (argv.buildcomment) boxPostParams.BUILDCOMMENT = argv.buildcomment
+  if (argv.tags) boxPostParams.TAG = argv.tags.map(t => `${t}`)
+  if (argv.caps) boxPostParams.CAPS = buildBotiumCaps(argv.caps)
+  if (argv.sources) boxPostParams.SOURCES = buildBotiumCaps(argv.sources)
+  if (argv.envs) boxPostParams.ENVS = buildBotiumCaps(argv.envs)
 
   debug(`Botium Box calling ${argv.webhook} command options: ${util.inspect(boxPostParams)}`)
   request({
@@ -98,7 +98,7 @@ const handler = (argv) => {
           if (result.success) {
             testcaseDone()
           } else {
-            testcaseDone(result.err || `Botium Box returned error`)
+            testcaseDone(result.err || 'Botium Box returned error')
           }
         })
         suite.addTest(test)

@@ -22,7 +22,7 @@ module.exports = {
   builder: (yargs) => {
     yargs.positional('project', {
       describe: 'Project type',
-      choices: [ 'asserter', 'logichook' ],
+      choices: ['asserter', 'logichook'],
       default: 'asserter'
     })
   },

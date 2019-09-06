@@ -85,11 +85,11 @@ const handler = (argv) => {
   })
   debug(`ready reading convos (${compiler.convos.length}), expanding convos ...`)
   if (process.env.BOTIUM_EXPANDUTTERANCES === '1' || argv.expandutterances) {
-    debug(`expanding utterances ...`)
+    debug('expanding utterances ...')
     compiler.ExpandUtterancesToConvos()
   }
   if (process.env.BOTIUM_EXPANDSCRIPTINGMEMORY === '1' || argv.expandscriptingmemory) {
-    debug(`expanding scripting memory ...`)
+    debug('expanding scripting memory ...')
     compiler.ExpandScriptingMemoryToConvos()
   }
   compiler.ExpandConvos()

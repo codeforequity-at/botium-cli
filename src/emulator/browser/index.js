@@ -134,7 +134,7 @@ module.exports = (outputDir, idePort) => {
         mkdirp.sync(outputDir)
 
         const compiler = driver.BuildCompiler()
-        const scriptData = compiler.Decompile([ req.body ], 'SCRIPTING_FORMAT_TXT')
+        const scriptData = compiler.Decompile([req.body], 'SCRIPTING_FORMAT_TXT')
         fs.writeFileSync(filename, scriptData)
         term.green('Conversation written to file ' + filename + '\n')
         return res.json({ success: true, filename: filename })
@@ -185,7 +185,7 @@ module.exports = (outputDir, idePort) => {
 
       try {
         const compiler = driver.BuildCompiler()
-        const scriptData = compiler.Decompile([ req.body ], 'SCRIPTING_FORMAT_TXT')
+        const scriptData = compiler.Decompile([req.body], 'SCRIPTING_FORMAT_TXT')
 
         fs.writeFileSync(filename, scriptData)
         term.green('Conversation written to file ' + filename + '\n')

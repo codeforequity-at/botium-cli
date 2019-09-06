@@ -104,7 +104,7 @@ module.exports = (outputDir) => {
         try {
           mkdirp.sync(outputDir)
 
-          const scriptData = compiler.Decompile([ { header: { name }, conversation } ], 'SCRIPTING_FORMAT_TXT')
+          const scriptData = compiler.Decompile([{ header: { name }, conversation }], 'SCRIPTING_FORMAT_TXT')
           fs.writeFileSync(filename, scriptData)
           term.green('Conversation written to file ' + filename + '\n')
           conversation.length = 0

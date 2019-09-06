@@ -26,7 +26,7 @@ module.exports = {
   builder: (yargs) => {
     yargs.positional('ui', {
       describe: 'Emulator UI (terminal-based or webbrowser-based)',
-      choices: [ 'console', 'browser' ],
+      choices: ['console', 'browser'],
       default: 'console'
     })
     yargs.option('emulatorport', {

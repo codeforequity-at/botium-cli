@@ -20,7 +20,7 @@ const handleConfig = (argv) => {
     argv.convos = envConvoDirs
   } else {
     if (argv.convos && _.isString(argv.convos)) {
-      argv.convos = [ argv.convos ]
+      argv.convos = [argv.convos]
     }
   }
 
