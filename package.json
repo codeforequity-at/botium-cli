@@ -1,6 +1,6 @@
 {
   "name": "botium-cli",
-  "version": "0.0.54",
+  "version": "0.0.55",
   "description": "Botium - The Selenium for Chatbots",
   "main": "dist/botium-cli-cjs.js",
   "module": "dist/botium-cli-es.js",
@@ -43,7 +43,7 @@
   "dependencies": {
     "async": "^3.1.0",
     "body-parser": "^1.19.0",
-    "botium-asserter-basiclink": "0.0.5",
+    "botium-asserter-basiclink": "0.0.6",
     "botium-connector-alexa-avs": "0.0.6",
     "botium-connector-alexa-smapi": "0.0.7",
     "botium-connector-botkit": "0.0.4",
