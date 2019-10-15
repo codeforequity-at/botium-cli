@@ -52,7 +52,7 @@ MEDIA http://www.botium.at/img/logo.png
     )
     console.log(`Botium Convo File written to "${botiumEchoSample}".`)
   }
-  console.log('Botium initialization ready. You should now run "botium-cli run" to verify.')
+  console.log(`Botium initialization ready. You should now run "botium-cli run --verbose --convos ${botiumConvoDir}" to verify.`)
 }
 
 module.exports = {

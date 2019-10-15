@@ -1,0 +1,9 @@
+{
+  "botium": {
+    "Capabilities": {
+      "PROJECTNAME": "Botium Connectors Sample",
+      "CONTAINERMODE": "./src/MyCustomConnector.js",
+      "MYCUSTOMCONNECTOR_PREFIX": "You said: "
+    }
+  }
+}

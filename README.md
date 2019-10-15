@@ -75,11 +75,11 @@ Prepare a directory for Botium usage:
 * Adds a simple botium.json
 * Adds a sample convo file
 
-## botium-cli init-dev [asserter|logichook]
+## botium-cli init-dev [connector|asserter|logichook]
 
-Setup a development project for Botium asserters or logic hooks in the current directory:
+Setup a boilerplate development project for Botium connectors, asserters or logic hooks in the current directory:
 * Adds a Javascript source file with the skeleton code
-* Adds a botium.json with asserter/logic hook registration
+* Adds a botium.json with connector/asserter/logic hook registration
 * Adds a sample convo file
 
 ## botium-cli run
