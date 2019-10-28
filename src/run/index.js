@@ -1,6 +1,10 @@
 const util = require('util')
+const path = require('path')
+const fs = require('fs')
 const Mocha = require('mocha')
 const isJSON = require('is-json')
+const slug = require('slug')
+const mime = require('mime-types')
 const BotDriver = require('botium-core').BotDriver
 const expect = require('chai').expect
 const addContext = require('mochawesome/addContext')
@@ -74,6 +78,7 @@ const handler = (argv) => {
   argv.testsuitename = process.env.BOTIUM_TESTSUITENAME || argv.testsuitename
   argv.timeout = process.env.BOTIUM_TIMEOUT || argv.timeout
   argv.timeout = argv.timeout * 1000
+  argv.attachments = process.env.BOTIUM_ATTACHMENTS || argv.attachments
 
   const driver = new BotDriver()
   const compiler = driver.BuildCompiler()
@@ -129,19 +134,40 @@ const handler = (argv) => {
       debug('running testcase ' + convo.header.name)
 
       const messageLog = []
+      const attachmentsLog = []
       const listenerMe = (container, msg) => {
         messageLog.push('#me: ' + msg.messageText)
+        if (msg.attachments) attachmentsLog.push(...msg.attachments)
       }
       const listenerBot = (container, msg) => {
         messageLog.push('#bot: ' + msg.messageText)
+        if (msg.attachments) attachmentsLog.push(...msg.attachments)
+      }
+      const listenerAttachments = (container, attachment) => {
+        attachmentsLog.push(attachment)
       }
       driver.on('MESSAGE_SENTTOBOT', listenerMe)
       driver.on('MESSAGE_RECEIVEDFROMBOT', listenerBot)
+      driver.on('MESSAGE_ATTACHMENT', listenerAttachments)
 
       const finish = (err) => {
         addContext(runner, { title: 'Conversation Log', value: messageLog.join('\n') })
         driver.eventEmitter.removeListener('MESSAGE_SENTTOBOT', listenerMe)
         driver.eventEmitter.removeListener('MESSAGE_RECEIVEDFROMBOT', listenerBot)
+        driver.eventEmitter.removeListener('MESSAGE_ATTACHMENT', listenerAttachments)
+
+        if (argv.attachments && attachmentsLog.length > 0) {
+          debug(`Found ${attachmentsLog.length} attachments, saving to folder ${argv.attachments}`)
+          attachmentsLog.forEach((a, i) => {
+            const filename = slug(convo.header.name) + '_' + i + (a.name ? '_' + slug(a.name) : '') + (a.mimeType ? '.' + mime.extension(a.mimeType) : '')
+            const outputTo = path.join(argv.attachments, filename)
+            try {
+              fs.writeFileSync(outputTo, Buffer.from(a.base64, 'base64'))
+            } catch (err) {
+              debug(`Failed to write attachment to ${outputTo}: ${err.message || util.inspect(err)}`)
+            }
+          })
+        }
 
         testcaseDone(err)
       }
@@ -191,6 +217,9 @@ module.exports = {
     yargs.option('expandscriptingmemory', {
       describe: 'Expand scripting memory tables to separate convos (also read from env variable "BOTIUM_EXPANDSCRIPTINGMEMORY" - "1" means yes)',
       default: false
+    })
+    yargs.option('attachments', {
+      describe: 'Directory where to save message attachments, for example screenshots from webdriver (also read from env variable "BOTIUM_ATTACHMENTS")'
     })
     yargs.option('timeout', {
       describe: 'Timeout in seconds for Botium functions (also read from env variable "BOTIUM_TIMEOUT")',
