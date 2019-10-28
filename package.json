@@ -64,7 +64,7 @@
     "botium-connector-webdriverio": "0.1.3",
     "botium-connector-wechat": "0.0.1",
     "botium-connector-witai": "0.0.1",
-    "botium-core": "1.6.0",
+    "botium-core": "codeforequity-at/botium-core.git#feature/BOT-881-core-simplerest-should-support-i",
     "chai": "^4.2.0",
     "debug": "^4.1.1",
     "ejs": "^2.7.1",
