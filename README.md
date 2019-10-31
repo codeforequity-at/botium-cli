@@ -115,5 +115,5 @@ You can use all commands as described above. Special considerations:
 * You cannot use absolute pathes, but all pathes should be given relative to the current working directory. The current working directory is mapped to the docker container with the _-v_ switch (above this is mapped to the current working directory)
 * For running the console emulator, you will have to add the _-it_ flag to the docker command to enable terminal interactions:
 ```
-$ docker run --rm -v $(pwd):/app/workdir -it botium/botium-cli emulator browser
+$ docker run --rm -v $(pwd):/app/workdir -it botium/botium-cli emulator console
 ```
