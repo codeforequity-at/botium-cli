@@ -90,24 +90,12 @@ Automatically run all your scripted conversations against your chatbot and outpu
 
 Import conversation scripts or utterances from some source (for example, from IBM Watson workspace)
 
+## botium-cli inbound-proxy
+
+Launch an HTTP/JSON endpoint for inbound messages, forwarding them to Redis to make them consumable by Botium Core. 
+
 ## botium-cli emulator
 
-Especially with structured messages, it can become uncomfortable to write conversation files manually. Botium contains two emulators to support you with browsing and writing your conversation files:
-
-### Browser Emulator
-The Botium Browser Emulator provides a simple browser interface to record and organize your test cases, and to interact with your Chatbot.
-
-![Botium Browser Emulator](https://github.com/codeforequity-at/botium-docs/blob/master/deprecated/screenshots/ide_demo.png)
-
-Running it is simple:
-
-    $ botium-cli emulator browser
-
-To specify directory holding your convo files and to specify the configuration file:
-
-    $ botium-cli emulator browser --convos=./spec/convo --config=./spec/botium.json
-
-### Console Emulator
 The Botium Console Emulator is a basic command line interface to your chatbot running within Botium. You can record and save your conversation files.
 
 ![Botium Console Emulator](https://github.com/codeforequity-at/botium-docs/blob/master/deprecated/screenshots/chat.png)
@@ -115,7 +103,6 @@ The Botium Console Emulator is a basic command line interface to your chatbot ru
 Running it is simple:
 
     $ botium-cli emulator console
-
 
 # Using the Botium CLI docker image
 
@@ -130,9 +117,3 @@ You can use all commands as described above. Special considerations:
 ```
 $ docker run --rm -v $(pwd):/app/workdir -it botium/botium-cli emulator browser
 ```
-* For running the browser emulator, you will have to expose the emulator port from the docker container by adding the _-p 3000:3000_ switch:
-```
-$ docker run --rm -v $(pwd):/app/workdir -p 3000:3000 botium/botium-cli emulator browser
-```
-
-

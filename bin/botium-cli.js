@@ -52,10 +52,12 @@ yargsCmd.usage('Botium CLI\n\nUsage: $0 [options]') // eslint-disable-line
   .command(wrapHandler(require('../src/init')))
   .command(wrapHandler(require('../src/init-alexa-avs')))
   .command(wrapHandler(require('../src/init-dev')))
-  .command(require('../src/agent'))
+  .command(wrapHandler(require('../src/proxy')))
+  .command(wrapHandler(require('../src/agent')))
   .option('verbose', {
     alias: 'v',
     describe: 'Enable verbose output (also read from env variable "BOTIUM_VERBOSE" - "1" means verbose)',
+    type: 'boolean',
     default: false
   })
   .option('convos', {
