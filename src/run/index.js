@@ -1,6 +1,7 @@
 const util = require('util')
 const path = require('path')
 const fs = require('fs')
+const _ = require('lodash')
 const Mocha = require('mocha')
 const isJSON = require('is-json')
 const slug = require('slug')
@@ -67,6 +68,32 @@ class CsvReporter {
       console.log(`"NOK","${quote(test.parent && test.parent.title)}","${quote(test.title)}",${test.duration},"${quote(err.message)}"`)
     })
   }
+}
+
+const wrapBotiumError = (err) => {
+  const lines = []
+  lines.push(err.message)
+  if (err.cause && err.cause.context) {
+    const errArr = _.isArray(err.cause.context) ? err.cause.context : [err.cause.context]
+    errArr.forEach(errDetail => {
+      lines.push('########################################')
+      if (errDetail.type === 'asserter') {
+        const segments = []
+        segments.push(`ASSERTION FAILED in ${errDetail.source}${errDetail.subtype ? ` (${errDetail.subtype})` : ''}`)
+        errDetail.cause && errDetail.cause.expected && !errDetail.cause.not && segments.push(` - Expected: "${errDetail.cause.expected}" `)
+        errDetail.cause && errDetail.cause.expected && errDetail.cause.not && segments.push(` - NOT Expected: "${errDetail.cause.expected}" `)
+        errDetail.cause && errDetail.cause.actual && segments.push(` - Actual: "${errDetail.cause.actual}"`)
+        errDetail.cause && !errDetail.cause.actual && segments.push(' - Actual: empty')
+        lines.push(segments.join(''))
+        errDetail.input && errDetail.input.messageText && lines.push(`INPUT: ${errDetail.input.messageText}`)
+      } else if (errDetail.message) {
+        lines.push(`${errDetail.message}`)
+      }
+      lines.push('----------------------------------------')
+      lines.push(JSON.stringify(errDetail))
+    })
+  }
+  return new Error(lines.join('\r\n'))
 }
 
 const handler = (argv) => {
@@ -168,8 +195,11 @@ const handler = (argv) => {
             }
           })
         }
-
-        testcaseDone(err)
+        if (err) {
+          testcaseDone(wrapBotiumError(err))
+        } else {
+          testcaseDone()
+        }
       }
 
       convo.Run(suite.container)
