@@ -107,7 +107,7 @@ const handler = (argv) => {
           const testIntents = foldIntents.filter(fi => fi.test)
 
           const intentPromises = testIntents.map(async (foldIntent) => {
-            foldIntent.predictions = []
+            foldIntent.predictions = {}
 
             const foldDriver = new BotDriver(trainResult.caps)
             const foldContainer = await foldDriver.Build()
@@ -119,7 +119,7 @@ const handler = (argv) => {
                 await foldContainer.UserSaysText(utt)
                 const botMsg = await foldContainer.WaitBotSays()
 
-                const predictedIntentName = _.get(botMsg, 'nlp.intent.name')
+                const predictedIntentName = _.get(botMsg, 'nlp.intent.name') || 'None'
                 if (predictedIntentName) {
                   foldIntent.predictions[predictedIntentName] = (foldIntent.predictions[predictedIntentName] || 0) + 1
                 }
@@ -137,7 +137,7 @@ const handler = (argv) => {
           for (const testIntent of testIntents) {
             expectedIntents[testIntent.intentName] = testIntent.predictions
           }
-          const allIntentNames = foldIntents.map(fi => fi.intentName)
+          const allIntentNames = foldIntents.map(fi => fi.intentName).concat(['None'])
           for (const intentName of allIntentNames) {
             expectedIntents[intentName] = expectedIntents[intentName] || { }
           }
