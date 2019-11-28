@@ -120,8 +120,10 @@ const handler = (argv) => {
                 const botMsg = await foldContainer.WaitBotSays()
 
                 const predictedIntentName = _.get(botMsg, 'nlp.intent.name') || 'None'
-                if (predictedIntentName) {
-                  foldIntent.predictions[predictedIntentName] = (foldIntent.predictions[predictedIntentName] || 0) + 1
+                const mappedIntentName = (trainResult.trainedIntents && (trainResult.trainedIntents.find(ti => ti.mapFromIntentName === predictedIntentName) || {}).intentName) || predictedIntentName
+
+                if (mappedIntentName) {
+                  foldIntent.predictions[mappedIntentName] = (foldIntent.predictions[mappedIntentName] || 0) + 1
                 }
 
                 await foldContainer.Stop()
