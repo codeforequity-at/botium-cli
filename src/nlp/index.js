@@ -59,6 +59,7 @@ const handler = (argv) => {
   debug(`command options: ${util.inspect(argv)}`)
 
   const driver = new BotDriver()
+  const compiler = driver.BuildCompiler()
   const pluginConnector = getConnector(driver.caps.CONTAINERMODE)
 
   if (!pluginConnector || !pluginConnector.NLP) {
@@ -70,12 +71,24 @@ const handler = (argv) => {
     // eslint-disable-next-line no-unexpected-multiline
     (async () => {
       let extractedIntents = null
-      try {
-        debug('Extracting utterances ...')
-        extractedIntents = await ExtractIntentUtterances({})
-      } catch (err) {
-        console.log(`K-Fold failed to extract utterances: ${err.message}`)
-        return
+      if (argv.extract) {
+        try {
+          debug('Extracting utterances ...')
+          extractedIntents = await ExtractIntentUtterances({})
+        } catch (err) {
+          console.log(`K-Fold failed to extract utterances: ${err.message}`)
+          return
+        }
+      } else {
+        argv.convos.forEach((convodir) => {
+          compiler.ReadScriptsFromDirectory(convodir)
+        })
+        extractedIntents = {
+          intents: Object.keys(compiler.utterances).map(intentName => ({
+            intentName,
+            utterances: compiler.utterances[intentName].utterances
+          }))
+        }
       }
       const originalIntents = extractedIntents.intents
       debug(`Extracted intent utterances: ${JSON.stringify(originalIntents.map(i => ({ intentName: i.intentName, utterances: i.utterances.length })), null, 2)}`)
@@ -249,6 +262,11 @@ module.exports = {
     })
     yargs.option('shuffle', {
       describe: 'Shuffle utterances before K-Fold (monte carlo)',
+      boolean: true,
+      default: false
+    })
+    yargs.option('extract', {
+      describe: 'extract utterances from connector workspace (otherwise load from --convos directory or .)',
       boolean: true,
       default: false
     })
