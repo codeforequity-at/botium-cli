@@ -289,5 +289,6 @@ module.exports = {
       default: 'k-fold.csv'
     })
   },
-  handler
+  handler,
+  getConnector
 }
