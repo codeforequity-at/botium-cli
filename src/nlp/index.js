@@ -141,6 +141,7 @@ const handler = (argv) => {
 
                 await foldContainer.Stop()
               } catch (err) {
+                foldIntent.techfailures = (foldIntent.techfailures || 0) + 1
                 console.log(`K-Fold Round ${k + 1}: Failed sending utterance ${utt} - ${err.message}`)
               }
             }
@@ -166,15 +167,17 @@ const handler = (argv) => {
               return agg + (testIntent.predictions[otherIntentName] || 0)
             }, 0)
 
-            const score = {}
+            const score = {
+              techfailures: testIntent.techfailures || 0
+            }
 
             if (totalPredicted === 0) {
-              score.precision = 1
+              score.precision = 0
             } else {
               score.precision = (testIntent.predictions[testIntent.intentName] || 0) / totalPredicted
             }
             if (totalExpected === 0) {
-              score.recall = 1
+              score.recall = 0
             } else {
               score.recall = (testIntent.predictions[testIntent.intentName] || 0) / totalExpected
             }
@@ -192,14 +195,19 @@ const handler = (argv) => {
           }
 
           const foldMatrix = {
+            techfailures: matrix.reduce((sum, r) => sum + r.score.techfailures, 0),
             precision: matrix.reduce((sum, r) => sum + r.score.precision, 0) / matrix.length,
             recall: matrix.reduce((sum, r) => sum + r.score.recall, 0) / matrix.length,
             matrix
           }
-          foldMatrix.F1 = 2 * ((foldMatrix.precision * foldMatrix.recall) / (foldMatrix.precision + foldMatrix.recall))
+          if (foldMatrix.precision === 0 && foldMatrix.recall === 0) {
+            foldMatrix.F1 = 0
+          } else {
+            foldMatrix.F1 = 2 * ((foldMatrix.precision * foldMatrix.recall) / (foldMatrix.precision + foldMatrix.recall))
+          }
           foldMatrices.push(foldMatrix)
 
-          console.log(`K-Fold Round ${k + 1}: Precision=${foldMatrix.precision.toFixed(4)} Recall=${foldMatrix.recall.toFixed(4)} F1-Score=${foldMatrix.F1.toFixed(4)}`)
+          console.log(`K-Fold Round ${k + 1}: Precision=${foldMatrix.precision.toFixed(4)} Recall=${foldMatrix.recall.toFixed(4)} F1-Score=${foldMatrix.F1.toFixed(4)} Tech.Failures=${foldMatrix.techfailures}`)
         } catch (err) {
           console.log(`K-Fold testing for fold ${k + 1} failed: ${err.message}`)
         } finally {
@@ -212,12 +220,15 @@ const handler = (argv) => {
       }
       const avgPrecision = foldMatrices.reduce((sum, r) => sum + r.precision, 0) / foldMatrices.length
       const avgRecall = foldMatrices.reduce((sum, r) => sum + r.recall, 0) / foldMatrices.length
-      const avgF1 = 2 * ((avgPrecision * avgRecall) / (avgPrecision + avgRecall))
+      let avgF1 = 0
+      if (avgPrecision !== 0 || avgRecall !== 0) {
+        avgF1 = 2 * ((avgPrecision * avgRecall) / (avgPrecision + avgRecall))
+      }
 
       console.log('############# Summary #############')
       for (let k = 0; k < foldMatrices.length; k++) {
         const foldMatrix = foldMatrices[k]
-        console.log(`K-Fold Round ${k + 1}: Precision=${foldMatrix.precision.toFixed(4)} Recall=${foldMatrix.recall.toFixed(4)} F1-Score=${foldMatrix.F1.toFixed(4)}`)
+        console.log(`K-Fold Round ${k + 1}: Precision=${foldMatrix.precision.toFixed(4)} Recall=${foldMatrix.recall.toFixed(4)} F1-Score=${foldMatrix.F1.toFixed(4)} Tech.Failures=${foldMatrix.techfailures}`)
       }
       console.log(`K-Fold Avg: Precision=${avgPrecision.toFixed(4)} Recall=${avgRecall.toFixed(4)} F1-Score=${avgF1.toFixed(4)}`)
 
@@ -263,7 +274,7 @@ module.exports = {
     yargs.option('shuffle', {
       describe: 'Shuffle utterances before K-Fold (monte carlo)',
       boolean: true,
-      default: false
+      default: true
     })
     yargs.option('extract', {
       describe: 'extract utterances from connector workspace (otherwise load from --convos directory or .)',
