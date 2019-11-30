@@ -62,6 +62,7 @@
     "botium-connector-rasa": "0.0.2",
     "botium-connector-sapcai": "0.0.2",
     "botium-connector-watson": "0.0.9",
+    "botium-connector-webdriverio4": "0.1.3",
     "botium-connector-webdriverio": "0.1.3",
     "botium-connector-websocket": "0.0.2",
     "botium-connector-wechat": "0.0.1",
