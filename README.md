@@ -86,6 +86,22 @@ Setup a boilerplate development project for Botium connectors, asserters or logi
 
 Automatically run all your scripted conversations against your chatbot and output a test report
 
+## botium-cli nlpanalytics <algorithm>
+
+Runs NLP analytics with the selected algorithm.
+
+## botium-cli nlpextract
+
+Extract utterances from selected Botium connector and write to [Botium Utterances files](https://botium.atlassian.net/wiki/spaces/BOTIUM/pages/48922633/Composing+in+Text+files). Supported not by all connectors, please check [connector documentation](https://botium.atlassian.net/wiki/spaces/BOTIUM/pages/360553/Botium+Connectors). Supported amongst others by:
+
+* Dialogflow
+* IBM Watson
+* Amazon Lex
+* Wit.ai
+* NLP.js
+
+and more to come.
+
 ## botium-cli *import
 
 Import conversation scripts or utterances from some source (for example, from IBM Watson workspace)
