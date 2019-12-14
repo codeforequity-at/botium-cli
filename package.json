@@ -1,6 +1,6 @@
 {
   "name": "botium-cli",
-  "version": "0.0.61",
+  "version": "0.0.62",
   "description": "Botium - The Selenium for Chatbots",
   "main": "dist/botium-cli-cjs.js",
   "module": "dist/botium-cli-es.js",
@@ -50,7 +50,7 @@
     "botium-connector-botkit-websocket": "0.2.0",
     "botium-connector-botpress": "0.0.4",
     "botium-connector-dialogflow": "0.0.12",
-    "botium-connector-directline3": "0.0.16",
+    "botium-connector-directline3": "0.0.17",
     "botium-connector-echo": "0.0.4",
     "botium-connector-fbwebhook": "0.0.2",
     "botium-connector-google-assistant": "0.0.4",
