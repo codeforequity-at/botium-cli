@@ -1,6 +1,6 @@
 {
   "name": "botium-cli",
-  "version": "0.0.63",
+  "version": "0.0.64",
   "description": "Botium - The Selenium for Chatbots",
   "main": "dist/botium-cli-cjs.js",
   "module": "dist/botium-cli-es.js",
@@ -57,6 +57,7 @@
     "botium-connector-koreai-webhook": "0.0.2",
     "botium-connector-lex": "0.0.3",
     "botium-connector-luis": "0.0.2",
+    "botium-connector-nlpjs": "0.0.1",
     "botium-connector-qnamaker": "0.0.1",
     "botium-connector-rasa": "0.0.2",
     "botium-connector-sapcai": "0.0.2",
