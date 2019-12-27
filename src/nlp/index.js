@@ -97,6 +97,7 @@ const handler = (argv) => {
       console.log(`Created ${argv.k} folds (shuffled: ${argv.shuffle})`)
 
       const foldMatrices = []
+      const predictionDetails = []
 
       for (let k = 0; k < folds.length; k++) {
         const foldIntents = folds[k]
@@ -138,11 +139,27 @@ const handler = (argv) => {
                 if (mappedIntentName) {
                   foldIntent.predictions[mappedIntentName] = (foldIntent.predictions[mappedIntentName] || 0) + 1
                 }
+
                 foldIntent.techok = (foldIntent.techok || 0) + 1
+                predictionDetails.push({
+                  fold: k,
+                  match: (foldIntent.intentName === mappedIntentName) ? 'Y' : 'N',
+                  utterance: utt,
+                  expectedIntent: foldIntent.intentName,
+                  predictedIntent: predictedIntentName
+                })
 
                 await foldContainer.Stop()
               } catch (err) {
                 foldIntent.techfailures = (foldIntent.techfailures || 0) + 1
+                predictionDetails.push({
+                  fold: k,
+                  match: 'N',
+                  utterance: utt,
+                  expectedIntent: foldIntent.intentName,
+                  predictedIntent: null
+                })
+
                 console.log(`K-Fold Round ${k + 1}: Failed sending utterance "${utt}" - ${err.message}`)
               }
             }
@@ -259,6 +276,23 @@ const handler = (argv) => {
       } catch (err) {
         console.log(`Failed to write output file ${argv.output} - ${err.message}`)
       }
+
+      const csvLinesPredictions = [
+        ['fold', 'match', 'utterance', 'expectedIntent', 'predictedIntent'].join(';')
+      ].concat(predictionDetails.map(d => [
+        `${d.fold + 1}`,
+        d.match,
+        d.utterance || '',
+        d.expectedIntent || '',
+        d.predictedIntent || ''
+      ].join(';')
+      ))
+      try {
+        fs.writeFileSync(argv.outputPredictions, csvLinesPredictions.join('\r\n'))
+        console.log(`Wrote predictions output file ${argv.outputPredictions}`)
+      } catch (err) {
+        console.log(`Failed to write predictions output file ${argv.outputPredictions} - ${err.message}`)
+      }
     })()
   }
 }
@@ -292,6 +326,10 @@ module.exports = {
     yargs.option('output', {
       describe: 'Output scores to CSV file',
       default: 'k-fold.csv'
+    })
+    yargs.option('outputPredictions', {
+      describe: 'Output intent predictions to CSV file',
+      default: 'k-fold-predictions.csv'
     })
   },
   handler,
