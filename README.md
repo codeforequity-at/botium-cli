@@ -90,6 +90,11 @@ Automatically run all your scripted conversations against your chatbot and outpu
 
 Runs NLP analytics with the selected algorithm.
 
+* **validate** - run one-shot training and testing of NLP engine
+* **k-fold** - run k-fold training and testing of NLP engine
+
+See [this article](https://chatbotslife.com/tutorial-benchmark-your-chatbot-on-watson-dialogflow-wit-ai-and-more-92885b4fbd48) for further information.
+
 ## botium-cli nlpextract
 
 Extract utterances from selected Botium connector and write to [Botium Utterances files](https://botium.atlassian.net/wiki/spaces/BOTIUM/pages/48922633/Composing+in+Text+files). Supported not by all connectors, please check [connector documentation](https://botium.atlassian.net/wiki/spaces/BOTIUM/pages/360553/Botium+Connectors). Supported amongst others by:
@@ -108,7 +113,9 @@ Import conversation scripts or utterances from some source (for example, from IB
 
 ## botium-cli inbound-proxy
 
-Launch an HTTP/JSON endpoint for inbound messages, forwarding them to Redis to make them consumable by Botium Core. 
+Launch an HTTP/JSON endpoint for inbound messages, forwarding them to Redis to make them consumable by Botium Core.
+
+See [Botium Wiki](https://botium.atlassian.net/wiki/spaces/BOTIUM/pages/24510469/Generic+HTTP+S+JSON+Connector) how to use.
 
 ## botium-cli emulator
 
