@@ -140,3 +140,20 @@ You can use all commands as described above. Special considerations:
 ```
 $ docker run --rm -v $(pwd):/app/workdir -it botium/botium-cli emulator console
 ```
+
+## Usage under Windows
+
+When using the above command under Windows, especially with _git bash_, you may receive an error like this:
+
+```
+C:\Program Files\Docker\Docker\Resources\bin\docker.exe: Error response from daemon: Mount denied:
+The source path "C:/dev/xxxxx;C"
+doesn't exist and is not known to Docker.
+```
+
+In this case you have to disable the bash path conversion:
+
+     > export MSYS_NO_PATHCONV=1
+
+
+
