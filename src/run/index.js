@@ -3,6 +3,7 @@ const path = require('path')
 const fs = require('fs')
 const _ = require('lodash')
 const Mocha = require('mocha')
+const mkdirp = require('mkdirp')
 const isJSON = require('is-json')
 const slug = require('slug')
 const mime = require('mime-types')
@@ -106,6 +107,16 @@ const handler = (argv) => {
   argv.timeout = process.env.BOTIUM_TIMEOUT || argv.timeout
   argv.timeout = argv.timeout * 1000
   argv.attachments = process.env.BOTIUM_ATTACHMENTS || argv.attachments
+
+  if (argv.attachments && !fs.existsSync(argv.attachments)) {
+    try {
+      mkdirp.sync(argv.attachments)
+      debug(`Created attachments directory "${argv.attachments}"`)
+    } catch (err) {
+      console.log(`Failed to create attachments directory ${argv.attachments}: ${err.message}`)
+      process.exit(1)
+    }
+  }
 
   const driver = new BotDriver()
   const compiler = driver.BuildCompiler()
