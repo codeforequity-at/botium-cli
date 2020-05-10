@@ -7,7 +7,7 @@ Botium CLI - The Selenium for Chatbots
 [![npm version](https://badge.fury.io/js/botium-cli.svg)](https://badge.fury.io/js/botium-cli)
 [![license](https://img.shields.io/github/license/mashape/apistatus.svg)]()
 
-Botium is the Selenium for chatbots. Botium CLI is the swiss army knife of Botium.
+[Botium is the Selenium for chatbots](https://www.botium.ai). Botium CLI is the swiss army knife of Botium.
 
 **_IF YOU LIKE WHAT YOU SEE, PLEASE CONSIDER GIVING US A STAR ON GITHUB!_**
 
