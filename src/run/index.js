@@ -9,6 +9,7 @@ const mime = require('mime-types')
 const BotDriver = require('botium-core').BotDriver
 const expect = require('chai').expect
 const addContext = require('mochawesome/addContext')
+const { reportUsage } = require('../metrics')
 const debug = require('debug')('botium-cli-run')
 
 const outputTypes = [
@@ -117,6 +118,20 @@ const handler = (argv) => {
     compiler.ExpandScriptingMemoryToConvos()
   }
   compiler.ExpandConvos()
+
+  const usageMetrics = {
+    metric: 'testexecution',
+    connector: `${compiler.caps.CONTAINERMODE}`,
+    testsuitename: argv.testsuitename,
+    projectname: `${compiler.caps.PROJECTNAME}`,
+    convoCount: compiler.convos.length,
+    convoStepCount: compiler.convos.reduce((sum, convo) => sum + convo.conversation.length, 0),
+    partialConvoCount: Object.keys(compiler.partialConvos).length,
+    utterancesRefCount: Object.keys(compiler.utterances).length,
+    utterancesCount: Object.keys(compiler.utterances).reduce((sum, uttName) => sum + compiler.utterances[uttName].utterances.length, 0),
+    scriptingMemoriesCount: compiler.scriptingMemories.length
+  }
+  reportUsage(usageMetrics)
 
   debug(`ready expanding convos and utterances, number of test cases: (${compiler.convos.length}).`)
 

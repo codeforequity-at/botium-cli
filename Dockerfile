@@ -7,7 +7,7 @@ RUN npm set unsafe-perm true && npm config set prefix /app/npm && npm config set
 RUN CHROMEDRIVER_FILEPATH=/usr/bin/chromedriver npm install -g chromedriver@81.0.0
 
 COPY ./package.json /app/botium-cli/package.json
-RUN cd /app/botium-cli && npm install --production --no-optional
+RUN cd /app/botium-cli && BOTIUM_ANALYTICS=false npm install --production --no-optional
 RUN apk del curl curl-dev g++ gcc make python krb5-dev
 COPY . /app/botium-cli
 

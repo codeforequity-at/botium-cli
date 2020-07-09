@@ -1,6 +1,6 @@
 {
   "name": "botium-cli",
-  "version": "0.0.70",
+  "version": "0.0.71",
   "description": "Botium - The Selenium for Chatbots",
   "main": "dist/botium-cli-cjs.js",
   "module": "dist/botium-cli-es.js",
@@ -11,6 +11,7 @@
     "botium-cli": "./bin/botium-cli.js"
   },
   "scripts": {
+    "postinstall": "node ./report.js",
     "build": "npm run eslint && rollup -c",
     "builddocker": "docker build . -t botium/botium-cli:$npm_package_version",
     "eslint": "eslint \"./src/**/*.js\" \"./bin/**/*.js\"",
