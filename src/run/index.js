@@ -167,14 +167,11 @@ const handler = (argv) => {
     const test = new Mocha.Test(convo.header.name, (testcaseDone) => {
       debug('running testcase ' + convo.header.name)
 
-      const messageLog = []
       const attachmentsLog = []
       const listenerMe = (container, msg) => {
-        messageLog.push('#me: ' + msg.messageText)
         if (msg.attachments) attachmentsLog.push(...msg.attachments)
       }
       const listenerBot = (container, msg) => {
-        messageLog.push('#bot: ' + msg.messageText)
         if (msg.attachments) attachmentsLog.push(...msg.attachments)
       }
       const listenerAttachments = (container, attachment) => {
@@ -184,8 +181,10 @@ const handler = (argv) => {
       driver.on('MESSAGE_RECEIVEDFROMBOT', listenerBot)
       driver.on('MESSAGE_ATTACHMENT', listenerAttachments)
 
-      const finish = (err) => {
-        addContext(runner, { title: 'Conversation Log', value: messageLog.join('\n') })
+      const finish = (transcript, err) => {
+        if (transcript) {
+          addContext(runner, { title: 'Conversation Log', value: transcript.prettifyActual() })
+        }
         driver.eventEmitter.removeListener('MESSAGE_SENTTOBOT', listenerMe)
         driver.eventEmitter.removeListener('MESSAGE_RECEIVEDFROMBOT', listenerBot)
         driver.eventEmitter.removeListener('MESSAGE_ATTACHMENT', listenerAttachments)
@@ -210,13 +209,13 @@ const handler = (argv) => {
       }
 
       convo.Run(suite.container)
-        .then(() => {
+        .then((transcript) => {
           debug(convo.header.name + ' ready, calling done function.')
-          finish()
+          finish(transcript)
         })
         .catch((err) => {
           debug(convo.header.name + ' failed: ' + util.inspect(err))
-          finish(err)
+          finish(err.transcript, err)
         })
     })
     test.timeout(argv.timeout)

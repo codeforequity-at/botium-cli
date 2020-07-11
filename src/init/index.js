@@ -47,7 +47,7 @@ give me a picture
 
 #bot
 Here is a picture
-MEDIA http://www.botium.at/img/logo.png
+MEDIA logo.png
 `
     )
     console.log(`Botium Convo File written to "${botiumEchoSample}".`)

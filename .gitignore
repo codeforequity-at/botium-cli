@@ -60,3 +60,4 @@ typings/
 dist
 /.idea
 package-lock.json
+test/
