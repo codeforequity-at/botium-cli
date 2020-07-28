@@ -57,12 +57,15 @@ const handler = (argv) => {
   if (argv.sources) boxPostParams.SOURCES = buildBotiumCaps(argv.sources)
   if (argv.envs) boxPostParams.ENVS = buildBotiumCaps(argv.envs)
 
-  debug(`Botium Box calling ${argv.webhook} command options: ${util.inspect(boxPostParams)}`)
-  request({
+  const requestOptions = {
     uri: argv.webhook,
     method: 'POST',
-    json: boxPostParams
-  }, (err, response, body) => {
+    json: boxPostParams,
+    timeout: argv.timeout * 1000
+  }
+
+  debug(`Botium Box calling ${argv.webhook} command options: ${util.inspect(requestOptions)}`)
+  request(requestOptions, (err, response, body) => {
     if (err) {
       console.log(`ERROR: ${err}`)
       return process.exit(1)
@@ -98,7 +101,7 @@ const handler = (argv) => {
           if (result.success) {
             testcaseDone()
           } else {
-            testcaseDone(result.err || 'Botium Box returned error')
+            testcaseDone(new Error(result.err || 'Botium Box returned error'))
           }
         })
         suite.addTest(test)
@@ -149,6 +152,11 @@ module.exports = {
     })
     yargs.option('reporter-options', {
       describe: 'Options for mocha reporter, either as JSON, or as key-value pairs ("option1=value1,option2=value2,..."). For details see documentation of the used mocha reporter.'
+    })
+    yargs.option('timeout', {
+      describe: 'Timeout in seconds for calling the Botium Box Webhook',
+      number: true,
+      default: 300
     })
   },
   handler
