@@ -132,6 +132,30 @@ Running it is simple:
 
     $ botium-cli emulator console
 
+## botium-cli crawler-run
+
+The Botium Crawler is command line interface to generate conversations along buttons.
+
+The simplest way you can use it from the same folder where you a `botium.json` file placed. 
+In this case the crawler is going to start with `hello` and `help` entry points, 
+and by default try to make the all possible conversation 5 depth along buttons. 
+By default the result is stored in the `./crawler-result` folder:
+
+    $ botium-cli crawler-run
+
+#### botium-cli crawler-feedbacks
+
+The Botium Crawler is able to ask user for feedbacks in case of there are no buttons in the bot answer, 
+so the conversation is stucked before the depth is reached. 
+By default the user feedbacks are stored in `./crawler-result/userFeedback.json` file, 
+and these feedbacks are reused in the next runs. 
+With the following command you can edit (`add`, `remove`, `overwrite`) your stored feedbacks:
+
+    $ botium-cli crawler-feedbacks
+
+ 
+There are many other configuration parameters. For more information see Botium Crawler on [github](https://github.com/codeforequity-at/botium-crawler).
+
 # Using the Botium CLI docker image
 
 Instead of installing the NPM package, you can use the Botium CLI docker image instead:
