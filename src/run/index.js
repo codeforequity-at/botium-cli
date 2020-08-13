@@ -9,6 +9,7 @@ const mime = require('mime-types')
 const BotDriver = require('botium-core').BotDriver
 const expect = require('chai').expect
 const addContext = require('mochawesome/addContext')
+const { reportUsage } = require('../metrics')
 const debug = require('debug')('botium-cli-run')
 
 const outputTypes = [
@@ -118,6 +119,20 @@ const handler = (argv) => {
   }
   compiler.ExpandConvos()
 
+  const usageMetrics = {
+    metric: 'testexecution',
+    connector: `${compiler.caps.CONTAINERMODE}`,
+    testsuitename: argv.testsuitename,
+    projectname: `${compiler.caps.PROJECTNAME}`,
+    convoCount: compiler.convos.length,
+    convoStepCount: compiler.convos.reduce((sum, convo) => sum + convo.conversation.length, 0),
+    partialConvoCount: Object.keys(compiler.partialConvos).length,
+    utterancesRefCount: Object.keys(compiler.utterances).length,
+    utterancesCount: Object.keys(compiler.utterances).reduce((sum, uttName) => sum + compiler.utterances[uttName].utterances.length, 0),
+    scriptingMemoriesCount: compiler.scriptingMemories.length
+  }
+  reportUsage(usageMetrics)
+
   debug(`ready expanding convos and utterances, number of test cases: (${compiler.convos.length}).`)
 
   const mocha = new Mocha({
@@ -152,14 +167,11 @@ const handler = (argv) => {
     const test = new Mocha.Test(convo.header.name, (testcaseDone) => {
       debug('running testcase ' + convo.header.name)
 
-      const messageLog = []
       const attachmentsLog = []
       const listenerMe = (container, msg) => {
-        messageLog.push('#me: ' + msg.messageText)
         if (msg.attachments) attachmentsLog.push(...msg.attachments)
       }
       const listenerBot = (container, msg) => {
-        messageLog.push('#bot: ' + msg.messageText)
         if (msg.attachments) attachmentsLog.push(...msg.attachments)
       }
       const listenerAttachments = (container, attachment) => {
@@ -169,8 +181,10 @@ const handler = (argv) => {
       driver.on('MESSAGE_RECEIVEDFROMBOT', listenerBot)
       driver.on('MESSAGE_ATTACHMENT', listenerAttachments)
 
-      const finish = (err) => {
-        addContext(runner, { title: 'Conversation Log', value: messageLog.join('\n') })
+      const finish = (transcript, err) => {
+        if (transcript) {
+          addContext(runner, { title: 'Conversation Log', value: transcript.prettifyActual() })
+        }
         driver.eventEmitter.removeListener('MESSAGE_SENTTOBOT', listenerMe)
         driver.eventEmitter.removeListener('MESSAGE_RECEIVEDFROMBOT', listenerBot)
         driver.eventEmitter.removeListener('MESSAGE_ATTACHMENT', listenerAttachments)
@@ -195,13 +209,13 @@ const handler = (argv) => {
       }
 
       convo.Run(suite.container)
-        .then(() => {
+        .then((transcript) => {
           debug(convo.header.name + ' ready, calling done function.')
-          finish()
+          finish(transcript)
         })
         .catch((err) => {
           debug(convo.header.name + ' failed: ' + util.inspect(err))
-          finish(err)
+          finish(err.transcript, err)
         })
     })
     test.timeout(argv.timeout)
