@@ -91,6 +91,11 @@ Setup a boilerplate development project for Botium connectors, asserters or logi
 
 Automatically run all your scripted conversations against your chatbot and output a test report
 
+## botium-cli hello
+
+Runs a connectivity check against your chatbot by sending a message (by default 'hello') 
+and waiting for an answer from bot.
+
 ## botium-cli nlpanalytics <algorithm>
 
 Runs NLP analytics with the selected algorithm.
