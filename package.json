@@ -75,6 +75,7 @@
     "botium-connector-wechat": "0.0.1",
     "botium-connector-whatsapp": "0.0.1",
     "botium-connector-witai": "0.0.3",
+    "botium-connector-oracleda": "0.0.1",
     "botium-core": "1.9.10",
     "botium-crawler": "0.0.3",
     "chai": "^4.2.0",

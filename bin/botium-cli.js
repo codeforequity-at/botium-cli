@@ -44,6 +44,7 @@ yargsCmd.usage('Botium CLI\n\nUsage: $0 [options]') // eslint-disable-line
   .strict(true)
   .demandCommand(1, 'You need at least one command before moving on')
   .command(wrapHandler(require('../src/run')))
+  .command(wrapHandler(require('../src/hello')))
   .command(wrapHandler(require('../src/nlp')))
   .command(wrapHandler(require('../src/nlp/extract')))
   .command(wrapHandler(require('../src/nlp/split')))
