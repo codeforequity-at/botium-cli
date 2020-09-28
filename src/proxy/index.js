@@ -1,6 +1,5 @@
 const util = require('util')
 const { buildRedisHandler, startProxy } = require('botium-core/src/grid/inbound/proxy')
-const { REDIS_TOPIC } = require('botium-core/src/containers/plugins/SimpleRestContainer')
 const debug = require('debug')('botium-cli-proxy')
 
 const handler = (argv) => {
@@ -36,7 +35,7 @@ module.exports = {
     })
     yargs.option('topic', {
       describe: 'Redis topic to forward inbound messages',
-      default: REDIS_TOPIC
+      default: 'SIMPLEREST_INBOUND_SUBSCRIPTION'
     })
   },
   handler
