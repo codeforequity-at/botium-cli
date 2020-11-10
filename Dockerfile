@@ -9,7 +9,7 @@ RUN CHROMEDRIVER_FILEPATH=/usr/bin/chromedriver npm install -g chromedriver@81.0
 COPY ./package.json /app/botium-cli/package.json
 COPY ./package-merge-use-botium-npm.json /app/botium-cli/package-merge-use-botium-npm.json
 COPY ./report.js /app/botium-cli/report.js
-RUN cd /app/botium-cli && json-merger -p package-merge-use-botium-npm.json > package.json
+RUN cd /app/botium-cli && npx json-merger -p package-merge-use-botium-npm.json > package-npm.json && mv package-npm.json package.json
 RUN cd /app/botium-cli && BOTIUM_ANALYTICS=false npm install --production --no-optional
 RUN apk del curl curl-dev git g++ gcc make python krb5-dev
 COPY . /app/botium-cli
