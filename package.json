@@ -51,7 +51,6 @@
     "@babel/runtime": "^7.12.5",
     "botium-connector-echo": "0.0.9",
     "botium-core": "1.10.0",
-    "botium-crawler": "0.0.4",
     "chai": "^4.2.0",
     "debug": "^4.2.0",
     "figlet": "^1.5.0",
