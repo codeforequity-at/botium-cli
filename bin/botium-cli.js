@@ -37,7 +37,16 @@ const wrapHandler = (builder) => {
   return builder
 }
 
-yargsCmd.usage('Botium CLI\n\nUsage: $0 [options]') // eslint-disable-line
+const runIfModuleAvailable = (checkModule, fn, fn1) => {
+  try {
+    require(checkModule)
+    return fn()
+  } catch (err) {
+    if (fn1) return fn1()
+  }
+}
+
+const yargs = yargsCmd.usage('Botium CLI\n\nUsage: $0 [options]') // eslint-disable-line
   .help('help').alias('help', 'h')
   .version('version', require('../package.json').version).alias('version', 'V')
   .showHelpOnFail(true)
@@ -48,23 +57,12 @@ yargsCmd.usage('Botium CLI\n\nUsage: $0 [options]') // eslint-disable-line
   .command(wrapHandler(require('../src/nlp')))
   .command(wrapHandler(require('../src/nlp/extract')))
   .command(wrapHandler(require('../src/nlp/split')))
-  .command(wrapHandler(require('../src/import')('botium-connector-alexa-smapi', 'alexaimport', 'Import convos and utterances from Alexa SMAPI')))
-  .command(wrapHandler(require('../src/import')('botium-connector-dialogflow', 'dialogflowimport', 'Import convos and utterances from Google Dialogflow')))
-  .command(wrapHandler(require('../src/import')('botium-connector-watson', 'watsonimport', 'Import convos and utterances from IBM Watson Assistant')))
-  .command(wrapHandler(require('../src/import')('botium-connector-lex', 'leximport', 'Import convos and utterances from Amazon Lex')))
-  .command(wrapHandler(require('../src/import')('botium-connector-luis', 'luisimport', 'Import convos and utterances from Microsoft LUIS')))
-  .command(wrapHandler(require('../src/import')('botium-connector-qnamaker', 'qnamakerimport', 'Import convos and utterances from QnAMaker')))
-  .command(wrapHandler(require('../src/import')('botium-connector-rasa', 'rasaimport', 'Import convos and utterances from Rasa')))
   .command(wrapHandler(require('../src/emulator')))
   .command(wrapHandler(require('../src/box')))
   .command(wrapHandler(require('../src/init')))
-  .command(wrapHandler(require('../src/init-alexa-avs')))
-  .command(wrapHandler(require('../src/init-alexa-smapi')))
   .command(wrapHandler(require('../src/init-dev')))
   .command(wrapHandler(require('../src/proxy')))
   .command(wrapHandler(require('../src/agent')))
-  .command(wrapHandler(require('botium-crawler/src/crawler-run')))
-  .command(wrapHandler(require('botium-crawler/src/crawler-feedbacks')))
   .option('verbose', {
     alias: 'v',
     describe: 'Enable verbose output (also read from env variable "BOTIUM_VERBOSE" - "1" means verbose)',
@@ -84,4 +82,17 @@ yargsCmd.usage('Botium CLI\n\nUsage: $0 [options]') // eslint-disable-line
     nargs: 1,
     default: './botium.json'
   })
-  .argv
+  .command(wrapHandler(require('../src/import')('botium-connector-alexa-smapi', 'alexaimport', 'Import convos and utterances from Alexa SMAPI')))
+  .command(wrapHandler(require('../src/import')('botium-connector-dialogflow', 'dialogflowimport', 'Import convos and utterances from Google Dialogflow')))
+  .command(wrapHandler(require('../src/import')('botium-connector-watson', 'watsonimport', 'Import convos and utterances from IBM Watson Assistant')))
+  .command(wrapHandler(require('../src/import')('botium-connector-lex', 'leximport', 'Import convos and utterances from Amazon Lex')))
+  .command(wrapHandler(require('../src/import')('botium-connector-luis', 'luisimport', 'Import convos and utterances from Microsoft LUIS')))
+  .command(wrapHandler(require('../src/import')('botium-connector-qnamaker', 'qnamakerimport', 'Import convos and utterances from QnAMaker')))
+  .command(wrapHandler(require('../src/import')('botium-connector-rasa', 'rasaimport', 'Import convos and utterances from Rasa')))
+
+runIfModuleAvailable('botium-crawler', () => yargs.command(wrapHandler(require('botium-crawler/src/crawler-run'))), () => yargs.command({ command: 'crawler-run', describe: 'Install NPM module "botium-crawler" to enable this command', handler: () => ({}) }))
+runIfModuleAvailable('botium-crawler', () => yargs.command(wrapHandler(require('botium-crawler/src/crawler-feedbacks'))), () => yargs.command({ command: 'crawler-feedbacks', describe: 'Install NPM module "botium-crawler" to enable this command', handler: () => ({}) }))
+runIfModuleAvailable('botium-connector-alexa-avs', () => yargs.command(wrapHandler(require('../src/init-alexa-avs'))), () => yargs.command({ command: 'init-alexa-avs', describe: 'Install NPM module "botium-connector-alexa-avs" to enable this command', handler: () => ({}) }))
+runIfModuleAvailable('botium-connector-alexa-smapi', () => yargs.command(wrapHandler(require('../src/init-alexa-smapi'))), () => yargs.command({ command: 'init-alexa-smapi', describe: 'Install NPM module "botium-connector-alexa-smapi" to enable this command', handler: () => ({}) }))
+
+yargs.argv // eslint-disable-line

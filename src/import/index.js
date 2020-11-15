@@ -28,6 +28,16 @@ const writeUtterances = (compiler, utterance, samples, outputDir) => {
 }
 
 module.exports = (connector, command, describe) => {
+  try {
+    require(connector)
+  } catch (err) {
+    return {
+      command,
+      describe: `Install NPM module "${connector}" to enable this command`,
+      handler: () => ({})
+    }
+  }
+
   const { Handler, Args } = require(connector).Import
 
   return {

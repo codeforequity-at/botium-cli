@@ -1,0 +1,45 @@
+{
+  "$merge": {
+    "source": {
+      "$import": "package.json"
+    },
+    "with": {
+      "dependencies": {
+        "botium-asserter-basiclink": "0.0.7",
+        "botium-asserter-watson-toneanalyzer": "0.0.1",
+        "botium-connector-alexa-avs": "0.0.9",
+        "botium-connector-alexa-smapi": "0.0.12",
+        "botium-connector-botkit": "0.0.5",
+        "botium-connector-botkit-websocket": "0.2.0",
+        "botium-connector-botpress": "0.0.4",
+        "botium-connector-dialogflow": "0.0.24",
+        "botium-connector-directline3": "0.0.24",
+        "botium-connector-einsteinbot": "0.0.1",
+        "botium-connector-fbwebhook": "0.0.5",
+        "botium-connector-fbmessengerbots": "0.0.1",
+        "botium-connector-google-assistant": "0.0.7",
+        "botium-connector-holmes": "0.0.2",
+        "botium-connector-koreai-webhook": "0.0.2",
+        "botium-connector-lex": "0.0.13",
+        "botium-connector-luis": "0.0.7",
+        "botium-connector-nlpjs": "0.0.2",
+        "botium-connector-oracleda": "0.0.1",
+        "botium-connector-pandorabots": "0.0.1",
+        "botium-connector-qnamaker": "0.1.3",
+        "botium-connector-rasa": "0.0.6",
+        "botium-connector-sapcai": "0.0.7",
+        "botium-connector-teneo": "0.0.4",
+        "botium-connector-ubitec": "0.0.6",
+        "botium-connector-watson": "0.0.21",
+        "botium-connector-webdriverio": "0.3.5",
+        "botium-connector-websocket": "0.0.7",
+        "botium-connector-wechat": "0.0.1",
+        "botium-connector-whatsapp": "0.0.3",
+        "botium-connector-witai": "0.0.3",
+        "botium-connector-xatkit": "0.2.0",
+        "botium-crawler": "0.0.4",
+        "botium-logichook-perfectoreporting": "0.0.5"
+      }
+    }
+  }
+}
