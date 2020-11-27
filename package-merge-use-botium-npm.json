@@ -7,7 +7,7 @@
       "dependencies": {
         "botium-asserter-basiclink": "0.0.7",
         "botium-asserter-watson-toneanalyzer": "0.0.1",
-        "botium-connector-alexa-avs": "0.0.9",
+        "botium-connector-alexa-avs": "0.0.10",
         "botium-connector-alexa-smapi": "0.0.12",
         "botium-connector-botframework": "0.0.1",
         "botium-connector-botkit": "0.0.5",
