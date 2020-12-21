@@ -1,6 +1,6 @@
 {
   "name": "botium-cli",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Botium - The Selenium for Chatbots",
   "main": "dist/botium-cli-cjs.js",
   "module": "dist/botium-cli-es.js",
@@ -30,29 +30,29 @@
   },
   "homepage": "https://www.botium.ai",
   "devDependencies": {
-    "@babel/core": "^7.12.3",
-    "@babel/node": "^7.12.6",
-    "@babel/plugin-transform-runtime": "^7.12.1",
-    "@babel/preset-env": "^7.12.1",
-    "eslint": "^7.13.0",
-    "eslint-config-standard": "^16.0.1",
+    "@babel/core": "^7.12.10",
+    "@babel/node": "^7.12.10",
+    "@babel/plugin-transform-runtime": "^7.12.10",
+    "@babel/preset-env": "^7.12.11",
+    "eslint": "^7.16.0",
+    "eslint-config-standard": "^16.0.2",
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-standard": "^4.1.0",
     "license-checker": "^25.0.1",
-    "npm-check-updates": "^10.0.0",
-    "rollup": "^2.33.1",
+    "npm-check-updates": "^10.2.5",
+    "rollup": "^2.35.1",
     "rollup-plugin-babel": "^4.4.0",
-    "@rollup/plugin-commonjs": "^16.0.0",
+    "@rollup/plugin-commonjs": "^17.0.0",
     "@rollup/plugin-json": "^4.1.0"
   },
   "dependencies": {
     "@babel/runtime": "^7.12.5",
-    "botium-connector-echo": "0.0.11",
-    "botium-core": "1.10.2",
+    "botium-connector-echo": "0.0.12",
+    "botium-core": "1.10.3",
     "chai": "^4.2.0",
-    "debug": "^4.2.0",
+    "debug": "^4.3.1",
     "figlet": "^1.5.0",
     "fs-extra": "^9.0.1",
     "lodash": "^4.17.20",
@@ -64,6 +64,6 @@
     "request": "^2.88.2",
     "slug": "^4.0.2",
     "terminal-kit": "^1.44.0",
-    "yargs": "^16.1.0"
+    "yargs": "^16.2.0"
   }
 }
