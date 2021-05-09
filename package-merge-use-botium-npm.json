@@ -13,7 +13,7 @@
         "botium-connector-botkit": "0.0.5",
         "botium-connector-botkit-websocket": "0.2.0",
         "botium-connector-botpress": "0.0.4",
-        "botium-connector-chatlayer": "0.0.2",
+        "botium-connector-chatlayer": "0.0.6",
         "botium-connector-dialogflow": "0.0.27",
         "botium-connector-dialogflowcx": "0.0.1",
         "botium-connector-directline3": "0.0.26",
