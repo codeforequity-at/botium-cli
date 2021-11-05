@@ -1,4 +1,4 @@
-FROM node:13-alpine
+FROM node:15-alpine3.13
 
 RUN apk --no-cache add curl curl-dev git g++ make python bash alsa-lib-dev krb5 krb5-dev libstdc++ chromium harfbuzz nss freetype ttf-freefont chromium-chromedriver
 ENV CHROME_BIN=/usr/bin/chromium-browser CHROME_PATH=/usr/lib/chromium/
