@@ -17,6 +17,7 @@
     "publishdocker": "docker tag botium/botium-cli:$npm_package_version botium/botium-cli:latest && docker push botium/botium-cli:$npm_package_version && docker push botium/botium-cli:latest",
     "eslint": "eslint \"./src/**/*.js\" \"./bin/**/*.js\"",
     "eslint:fix": "eslint --fix \"./src/**/*.js\" \"./bin/**/*.js\"",
+    "test": "echo \"no tests for botium-cli yet\" && exit 0",
     "update-dependencies": "npm-check-updates -u --reject rollup --timeout 60000"
   },
   "repository": {
