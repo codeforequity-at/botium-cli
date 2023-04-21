@@ -2,7 +2,7 @@ const util = require('util')
 const fs = require('fs')
 const path = require('path')
 const term = require('terminal-kit').terminal
-const mkdirp = require('mkdirp')
+const { mkdirpSync } = require('mkdirp')
 const figlet = require('figlet')
 const repl = require('repl')
 const slug = require('slug')
@@ -102,7 +102,7 @@ module.exports = (outputDir) => {
         }
 
         try {
-          mkdirp.sync(outputDir)
+          mkdirpSync(outputDir)
 
           const scriptData = compiler.Decompile([{ header: { name }, conversation }], 'SCRIPTING_FORMAT_TXT')
           fs.writeFileSync(filename, scriptData)
@@ -115,7 +115,7 @@ module.exports = (outputDir) => {
         const channel = line.substr(0, line.indexOf(' '))
         const text = line.substr(line.indexOf(' ') + 1)
 
-        const msg = { messageText: text, sender: 'me', channel: channel }
+        const msg = { messageText: text, sender: 'me', channel }
 
         container.UserSays(msg).catch((err) => term.red(util.inspect(err)))
         conversation.push(msg)

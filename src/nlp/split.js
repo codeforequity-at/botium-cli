@@ -3,7 +3,7 @@ const path = require('path')
 const fs = require('fs')
 const yargsCmd = require('yargs')
 const slug = require('slug')
-const mkdirp = require('mkdirp')
+const { mkdirpSync } = require('mkdirp')
 const _ = require('lodash')
 const { BotDriver } = require('botium-core')
 const debug = require('debug')('botium-cli-nlp')
@@ -18,14 +18,14 @@ const writeUtterances = (filename, intentName, utterances) => {
 const split = async (argv) => {
   const trainDir = argv.train
   try {
-    mkdirp.sync(trainDir)
+    mkdirpSync(trainDir)
   } catch (err) {
     console.log(`Failed to create training data directory ${trainDir}: ${err.message}`)
     process.exit(1)
   }
   const testDir = argv.test
   try {
-    mkdirp.sync(testDir)
+    mkdirpSync(testDir)
   } catch (err) {
     console.log(`Failed to create test data directory ${testDir}: ${err.message}`)
     process.exit(1)

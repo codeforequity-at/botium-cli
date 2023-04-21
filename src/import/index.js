@@ -2,13 +2,13 @@
 const slug = require('slug')
 const fs = require('fs')
 const path = require('path')
-const mkdirp = require('mkdirp')
+const { mkdirpSync } = require('mkdirp')
 const { BotDriver } = require('botium-core')
 
 const writeConvo = (compiler, convo, outputDir) => {
   const filename = path.resolve(outputDir, slug(convo.header.name) + '.convo.txt')
 
-  mkdirp.sync(outputDir)
+  mkdirpSync(outputDir)
 
   const scriptData = compiler.Decompile([convo], 'SCRIPTING_FORMAT_TXT')
 
@@ -19,7 +19,7 @@ const writeConvo = (compiler, convo, outputDir) => {
 const writeUtterances = (compiler, utterance, samples, outputDir) => {
   const filename = path.resolve(outputDir, slug(utterance) + '.utterances.txt')
 
-  mkdirp.sync(outputDir)
+  mkdirpSync(outputDir)
 
   const scriptData = [utterance, ...samples].join('\n')
 

@@ -1,7 +1,7 @@
 const util = require('util')
 const fs = require('fs')
 const path = require('path')
-const mkdirp = require('mkdirp')
+const { mkdirpSync } = require('mkdirp')
 const debug = require('debug')('botium-bindings-cli')
 
 const handler = (argv) => {
@@ -9,7 +9,7 @@ const handler = (argv) => {
 
   const botiumConvoDir = argv.convos[0]
   if (!fs.existsSync(botiumConvoDir)) {
-    mkdirp.sync(botiumConvoDir)
+    mkdirpSync(botiumConvoDir)
   }
 
   const botiumJsonFile = argv.config

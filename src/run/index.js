@@ -2,11 +2,12 @@ const util = require('util')
 const path = require('path')
 const fs = require('fs')
 const Mocha = require('mocha')
-const mkdirp = require('mkdirp')
+const { mkdirpSync } = require('mkdirp')
 const isJSON = require('is-json')
 const slug = require('slug')
 const mime = require('mime-types')
-const BotDriver = require('botium-core').BotDriver
+const promiseRetry = require('promise-retry')
+const { BotDriver, RetryHelper } = require('botium-core')
 const expect = require('chai').expect
 const addContext = require('mochawesome/addContext')
 const { reportUsage } = require('../metrics')
@@ -92,7 +93,7 @@ const handler = (argv) => {
 
   if (argv.attachments && !fs.existsSync(argv.attachments)) {
     try {
-      mkdirp.sync(argv.attachments)
+      mkdirpSync(argv.attachments)
       debug(`Created attachments directory "${argv.attachments}"`)
     } catch (err) {
       console.log(`Failed to create attachments directory ${argv.attachments}: ${err.message}`)
@@ -208,7 +209,25 @@ const handler = (argv) => {
         }
       }
 
-      convo.Run(suite.container)
+      const retryHelper = new RetryHelper(suite.container.caps, 'CONVO')
+      promiseRetry(async (retry, number) => {
+        try {
+          const transcript = await convo.Run(suite.container)
+          debug(convo.header.name + ' ready, calling done function.')
+          return transcript
+        } catch (err) {
+          if (retryHelper.shouldRetry(err)) {
+            debug(`Running Convo "${convo.header.name}" trial #${number} failed, retry activated`)
+            await suite.container.Stop()
+            await suite.container.Start()
+            debug(`Restarting container for Convo "${convo.header.name}" trial #${number} completed successfully.`)
+            retry(err)
+          } else {
+            debug(`Running Convo "${convo.header.name}" trial #${number} failed finally`)
+            throw err
+          }
+        }
+      }, retryHelper.retrySettings)
         .then((transcript) => {
           debug(convo.header.name + ' ready, calling done function.')
           finish(transcript)
